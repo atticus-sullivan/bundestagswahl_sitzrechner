@@ -14,3 +14,6 @@ because until now decimal is not everywhere used, floating point inaccuracy migh
 - [bundeswahlleiter sainteLagueSchepers](https://www.bundeswahlleiter.de/service/glossar/s/sainte-lague-schepers.html)
 - [bundeswahlleiter sitzverteilung](https://www.bundeswahlleiter.de/service/glossar/s/sitzverteilung.html#id-0)
 - [banzhafIndex - Algorithmen verstehen](https://www.youtube.com/watch?v=YHI9O6dVags)
+
+- [csv 2017 Quelle](https://www.govdata.de/web/guest/suchen/-/details/bundestagswahl-2017)
+- [csv 2013 Quelle](https://www.govdata.de/web/guest/suchen/-/details/de-bundestagswahl-2013)
