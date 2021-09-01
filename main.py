@@ -32,12 +32,3 @@ if __name__ == "__main__":
     print(vert)
 
     Abstimmung.from_dict(vert).simulieren()
-
-    # https://de.wikipedia.org/wiki/Sitzzuteilungsverfahren_nach_der_Wahl_zum_Deutschen_Bundestag
-
-    # http://web.archive.org/web/20160509122126/http://www.gesetze-im-internet.de/bwahlg/__6.html
-    # http://www.gesetze-im-internet.de/bwahlg/__6.html
-    # https://www.bgbl.de/xaver/bgbl/start.xav?startbk=Bundesanzeiger_BGBl&jumpTo=bgbl120s2395.pdf#__bgbl__%2F%2F*%5B%40attr_id%3D%27bgbl120s2395.pdf%27%5D__1630416216257
-
-    # https://www.bundeswahlleiter.de/service/glossar/s/sainte-lague-schepers.html
-    # https://www.bundeswahlleiter.de/service/glossar/s/sitzverteilung.html#id-0
