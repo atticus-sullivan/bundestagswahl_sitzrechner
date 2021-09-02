@@ -1,7 +1,10 @@
+import csv
+
 from bund import Bund
 from land import Land
 from partei import Partei
-import csv
+from sls_executor17 import Sainte_Lague_Schepers_executor17
+from sls_executor21 import Sainte_Lague_Schepers_executor21
 
 """
 Representation of an election
@@ -43,6 +46,13 @@ class Wahl:
     def remove_below_huerde(self):
         self.bund.calc_percentageHuerde()
         self.bund.huerde_remove()
+
+    def calc_sitze(self):
+        self.remove_below_huerde()
+        if self.year <= 2017:
+            return Sainte_Lague_Schepers_executor17.apply(wahl=self)
+        else:
+            return Sainte_Lague_Schepers_executor21.apply(wahl=self)
 
     """
     load election results from file fn
