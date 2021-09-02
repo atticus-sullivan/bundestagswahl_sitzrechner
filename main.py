@@ -3,7 +3,6 @@
 from wahl import Wahl
 from banzhaff import Abstimmung
 
-### TODO create all variables in contstructors and print them on __str__ / __repr__
 ## TODO use decimal for correct rounding and precise calculations
 
 if __name__ == "__main__":
