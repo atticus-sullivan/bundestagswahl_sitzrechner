@@ -9,7 +9,6 @@ class Sainte_Lague_Schepers_executor21:
     def mindestsitzzahlen(parteien):
         for nB,pB in parteien.items():
             mindestsitzzahl = 0
-            drohender_ueberhang = 0
             sitzkontingentVerteilung = 0
             for n,p in pB.partei_in_land.items():
                 mean = ((Decimal(p.sitzkontingentVerteilung) + Decimal(p.direktmandate))/2).to_integral_value(rounding=ROUND_HALF_UP)
@@ -18,13 +17,11 @@ class Sainte_Lague_Schepers_executor21:
 
                 mindestsitzzahl += p.mindestsitzzahl
                 sitzkontingentVerteilung += p.sitzkontingentVerteilung
-                drohender_ueberhang += max(p.direktmandate - p.sitzkontingentVerteilung,0)
 
             pB.mindestsitzzahl = mindestsitzzahl
-            pB.drohender_ueberhang = drohender_ueberhang
             pB.sitzkontingentVerteilung = sitzkontingentVerteilung
             pB.mindestsitzanspruch = max(pB.mindestsitzzahl, pB.sitzkontingentVerteilung)
-            # print(pB.name, "Sitzkontingent:", pB.sitzkontingentVerteilung, "DrohendÜberhang:", pB.drohender_ueberhang)
+            # print(pB.name, "Sitzkontingent:", pB.sitzkontingentVerteilung)
 
     @staticmethod
     def oberverteilung(parteien, ges_sitze):
