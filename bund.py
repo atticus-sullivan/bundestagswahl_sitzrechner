@@ -3,6 +3,11 @@ class Bund:
         self.parteien = {}
         self.laender = {}
 
+    def __str__(self):
+        return "{[Bund] parteien:" + str(self.parteien) + ", laender:" + str(self.laender) + "}"
+    def __repr__(self):
+        return str(self)
+
     @property
     def parteien(self):
         return self._parteien

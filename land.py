@@ -9,6 +9,11 @@ class Land:
         self.sitzkontingent = None
         self.parteien = {p.name: Partei_in_Land(p.name, self) for p in Partei.parteien.values()}
 
+    def __str__(self):
+        return "{[Land] name:" + str(self.name) + ", id:" + str(self.id) + ", ewz:" + str(ewz) + ", sitzkontingent:" + str(self.sitzkontingent) + ", parteien:" + str(self.parteien) + "}"
+    def __repr__(self):
+        return str(self)
+
     @property
     def name(self):
         return self._name
@@ -58,9 +63,3 @@ class Land:
 
     def put_partei(self, name, erststimmen, zweitstimmen):
         self.parteien[name].update_stimmen(erststimmen, zweitstimmen)
-
-    def __str__(self):
-        return "{name:" + self.name + ", id:" + self.id + ", ewz:" + str(self.ewz) + ", sitzkontingent:"  + str(self.sitzkontingent) # + ", parteien" + str(self.parteien) + "}"
-
-    def __repr__(self):
-        return self.__str__()

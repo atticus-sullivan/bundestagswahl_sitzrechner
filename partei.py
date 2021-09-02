@@ -17,6 +17,11 @@ class Partei:
         self.ueberhang = None
         self.percentageZweit = None
 
+    def __str__(self):
+        return "[Partei] name:" + str(self.name) + ", direktmandate:" + str(self.direktmandate) + ", ueberHuerde: " + str(self.ueberHuerde) + ", partei_in_land:" + str(self.partei_in_land) + ", zweitstimmen:" + str(self.zweitstimmen) + ", mindestsitzzahl:" + str(self.mindestsitzzahl) + ", sitze:" + str(self.sitze) + ", mindestsitzanspruch:" + str(self.mindestsitzanspruch) + ", ueberhang:" + str(self.ueberhang) + ", perctnageZweit:" + str(self.percentageZweit) + "}"
+    def __repr__(self):
+        return str(self)
+
     @property
     def name(self):
         return self._name

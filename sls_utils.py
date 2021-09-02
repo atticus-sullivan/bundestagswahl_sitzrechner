@@ -6,6 +6,12 @@ class Sainte_Lague_Schepers_utils:
         self.zweitwahl = zweitwahl
         self.ges_sitze = ges_sitze
         self.verteilung = {}
+
+    def __str__(self):
+        return "{[sls_utils] zweitwahl:" + str(self.zweitwahl) + ", ges_sitze:" + str(self.ges_sitze) + ", verteilung:" + str(self.verteilung) + "}"
+    def __repr__(self):
+        return str(self)
+
     @property
     def zweitwahl(self):
         return self._zweitwahl

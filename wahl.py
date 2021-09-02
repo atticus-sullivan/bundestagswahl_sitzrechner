@@ -15,6 +15,11 @@ class Wahl:
         self.bund = Bund()
         self.verteilung = {} # Land -> Sainte_Lague_Schepers
 
+    def __str__(self):
+        return "{[Wahl] year:" + str(self.year) + ", bund:" + str(self.bund) + ", verteilung:" + str(self.verteilung) + "}"
+    def __repr__(self):
+        return str(self)
+
     @property
     def year(self):
         return self._year

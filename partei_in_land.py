@@ -15,6 +15,11 @@ class Partei_in_Land:
         self.sitzkontingentVerteilung = None
         self.mindestsitzzahl = None
 
+    def __str__(self):
+        return "[Partei_in_Land] name:" + str(self.name) + "land:" + str(self.land.name) + ", partei:" + str(self.partei.name) + ", direktmandate:" + str(self.direktmandate) + ", zweitstimmen:" + str(self.zweitstimmen) + ", sitzkontingentVerteilung:" + str(self.sitzkontingentVerteilung) + ", mindestsitzzahl:" + str(self.mindestsitzzahl) + "}"
+    def __repr__(self):
+        return str(self)
+
     @property
     def name(self):
         return self._name
@@ -87,8 +92,3 @@ class Partei_in_Land:
         self.erststimmen = erststimmen
         self.zweitstimmen = zweitstimmen
         self.partei.update_zweitstimmen(zweitstimmen)
-    
-    def __str__(self):
-        return "{" + self.name + "}"
-    def __repr__(self):
-        return self.__str__()
