@@ -7,7 +7,6 @@ class Partei_in_Land:
         self.partei = Partei.get(name)
         self.partei.add(self)
         
-        self.sitze = 0
         self.direktmandate = 0
         self.erststimmen = 0
         self.zweitstimmen = 0
