@@ -12,6 +12,9 @@ class Partei_in_Land:
         self.erststimmen = 0
         self.zweitstimmen = 0
 
+        self.sitzkontingentVerteilung = 0
+        self.mindestsitzzahl = 0
+
     def add_direktmandat(self):
         self.direktmandate += 1
         self.partei.direktmandate += 1

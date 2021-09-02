@@ -24,7 +24,7 @@ class Sainte_Lague_Schepers_executor21:
             pB.drohender_ueberhang = drohender_ueberhang
             pB.sitzkontingentVerteilung = sitzkontingentVerteilung
             pB.mindestsitzanspruch = max(pB.mindestsitzzahl, pB.sitzkontingentVerteilung)
-            # print(pB.name, "Sitzkontingent:", pB.sitzkontingentVerteilung, "DrohendÜberhang:", pB.drohender_ueberhang, "Direktmandate:", pB.direktmandate)
+            # print(pB.name, "Sitzkontingent:", pB.sitzkontingentVerteilung, "DrohendÜberhang:", pB.drohender_ueberhang)
 
     @staticmethod
     def oberverteilung(parteien, ges_sitze):

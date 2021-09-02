@@ -15,7 +15,8 @@ class Bund:
             total += p.zweitstimmen
 
         for p in self.parteien.values():
-            if p.zweitstimmen / total > 0.05:
+            p.percentageZweit = p.zweitstimmen / total
+            if p.percentageZweit > 0.05:
                 p.ueberHuerde = True
 
     def huerde_remove(self):

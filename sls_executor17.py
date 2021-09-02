@@ -23,7 +23,7 @@ class Sainte_Lague_Schepers_executor17:
 
     @staticmethod
     def oberverteilung(parteien, ges_sitze):
-        div = 1000000000000000000000000
+        div = 1000000000000000000000000 # TODO max
         for n,p in parteien.items():
             # print(p.zweitstimmen, "/", p.mindestsitzzahl, "-", 0.5)
             div = min(div, p.zweitstimmen / (p.mindestsitzzahl - 0.5))

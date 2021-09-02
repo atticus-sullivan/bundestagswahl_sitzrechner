@@ -11,6 +11,12 @@ class Partei:
         self.partei_in_land = {}
         self.zweitstimmen = 0
 
+        self.mindestsitzzahl = 0
+        self.sitze = 0
+        self.mindestsitzanspruch = 0
+        self.ueberhang = 0
+        self.perctnageZweit = 0
+
     def update_zweitstimmen(self, zweitstimmen):
         self.zweitstimmen += zweitstimmen
 

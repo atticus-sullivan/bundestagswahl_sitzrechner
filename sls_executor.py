@@ -19,8 +19,8 @@ class Sainte_Lague_Schepers_executor: # TODO abstract
             for n,p in l.parteien.items():
                 p.sitzkontingentVerteilung = s.verteilung[n]
     @staticmethod
-    def mindestsitzzahlen(parteien):
+    def mindestsitzzahlen(parteien): #TODO vererbung
         pass
     @staticmethod
-    def oberverteilung(parteien, ges_sitze):
+    def oberverteilung(parteien, ges_sitze): #TODO vererbung
         pass
