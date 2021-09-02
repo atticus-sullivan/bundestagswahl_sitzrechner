@@ -3,6 +3,26 @@ class Bund:
         self.parteien = {}
         self.laender = {}
 
+    @property
+    def parteien(self):
+        return self._parteien
+    @parteien.setter
+    def parteien(self, parteien):
+        if isinstance(parteien, dict):
+            self._parteien = parteien
+        else:
+            raise AttributeError("parteien has to be a dict, but was", type(parteien))
+
+    @property
+    def laender(self):
+        return self._laender
+    @laender.setter
+    def laender(self, laender):
+        if isinstance(laender, dict):
+            self._laender = laender
+        else:
+            raise AttributeError("laender has to be a dict, but was", type(laender))
+
     def add_partei(self, partei):
         self.parteien.update({partei.name: partei})
 

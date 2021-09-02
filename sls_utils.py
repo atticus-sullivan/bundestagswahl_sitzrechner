@@ -6,6 +6,33 @@ class Sainte_Lague_Schepers_utils:
         self.zweitwahl = zweitwahl
         self.ges_sitze = ges_sitze
         self.verteilung = {}
+    @property
+    def zweitwahl(self):
+        return self._zweitwahl
+    @zweitwahl.setter
+    def zweitwahl(self, zweitwahl):
+        if isinstance(zweitwahl, dict):
+            self._zweitwahl = zweitwahl
+        else:
+            raise AttributeError("zweitwahl has to be a dict, but was", type(zweitwahl))
+    @property
+    def ges_sitze(self):
+        return self._ges_sitze
+    @ges_sitze.setter
+    def ges_sitze(self, ges_sitze):
+        if isinstance(ges_sitze, int):
+            self._ges_sitze = ges_sitze
+        else:
+            raise AttributeError("ges_sitze has to be an int, but was", type(ges_sitze))
+    @property
+    def verteilung(self):
+        return self._verteilung
+    @verteilung.setter
+    def verteilung(self, verteilung):
+        if isinstance(verteilung, dict):
+            self._verteilung = verteilung
+        else:
+            raise AttributeError("verteilung has to be a dict, but was", type(verteilung))
 
     """
     calculate distribution

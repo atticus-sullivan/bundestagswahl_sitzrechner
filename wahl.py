@@ -10,7 +10,35 @@ class Wahl:
     def __init__(self, year):
         self.year = year
         self.bund = Bund()
-        self.verteilungen = {} # Land -> Sainte_Lague_Schepers
+        self.verteilung = {} # Land -> Sainte_Lague_Schepers
+
+    @property
+    def year(self):
+        return self._year
+    @year.setter
+    def year(self, year):
+        if isinstance(year, int):
+            self._year = year
+        else:
+            raise AttributeError("year has to be an int, but was", type(year))
+    @property
+    def bund(self):
+        return self._bund
+    @bund.setter
+    def bund(self, bund):
+        if isinstance(bund, Bund):
+            self._bund = bund
+        else:
+            raise AttributeError("bund has to be a Bund, but was", type(bund))
+    @property
+    def verteilung(self):
+        return self._verteilung
+    @verteilung.setter
+    def verteilung(self, verteilung):
+        if isinstance(verteilung, dict):
+            self._verteilung = verteilung
+        else:
+            raise AttributeError("verteilung has to be a dict, but was", type(verteilung))
 
     def remove_below_huerde(self):
         self.bund.calc_percentageHuerde()
