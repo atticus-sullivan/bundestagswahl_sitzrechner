@@ -1,10 +1,5 @@
 no warranty for corretness of the calculation
 
-because until now decimal is not everywhere used, floating point inaccuracy might occure (rounding up on .5 e.g. is done wrong this way)
-
-# TODOS:
-- use decimal for correct rounding and precise calculations
-
 # Credits/Sources:
 - [wikipedia](https://de.wikipedia.org/wiki/Sitzzuteilungsverfahren_nach_der_Wahl_zum_Deutschen_Bundestag)
 - [altes bwahlg](http://web.archive.org/web/20160509122126/http://www.gesetze-im-internet.de/bwahlg/__6.html)

@@ -3,8 +3,6 @@
 from wahl import Wahl
 from banzhaff import Abstimmung
 
-## TODO use decimal for correct rounding and precise calculations
-
 if __name__ == "__main__":
     w = Wahl(2017)
     w.load_from_csv("btw17_kerg.csv")
@@ -12,7 +10,6 @@ if __name__ == "__main__":
 
     vert,sitze = w.calc_sitze()
 
-    # print()
     print("Sitze:", sitze)
     print(vert)
 
@@ -24,7 +21,6 @@ if __name__ == "__main__":
     w.load_from_csv("btw17_kerg.csv")
     w.load_bef("btw17_bef.csv")
     vert,sitze = w.calc_sitze()
-    # print()
     print("Sitze:", sitze)
     print(vert)
 
