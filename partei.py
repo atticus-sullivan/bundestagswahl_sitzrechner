@@ -1,3 +1,4 @@
+from decimal import Decimal
 """
 Representation of a party
 """
@@ -108,10 +109,10 @@ class Partei:
         return self._percentageZweit
     @percentageZweit.setter
     def percentageZweit(self, percentageZweit):
-        if isinstance(percentageZweit, float) or percentageZweit is None:
+        if isinstance(percentageZweit, Decimal) or percentageZweit is None:
             self._percentageZweit = percentageZweit
         else:
-            raise AttributeError("percentageZweit has to be a float, but was", type(percentageZweit))
+            raise AttributeError("percentageZweit has to be a Decimal, but was", type(percentageZweit))
 
     def update_zweitstimmen(self, zweitstimmen):
         self.zweitstimmen += zweitstimmen

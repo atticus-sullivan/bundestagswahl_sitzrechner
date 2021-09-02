@@ -11,7 +11,7 @@ class Sainte_Lague_Schepers_executor21:
             mindestsitzzahl = 0
             sitzkontingentVerteilung = 0
             for n,p in pB.partei_in_land.items():
-                mean = ((Decimal(p.sitzkontingentVerteilung) + Decimal(p.direktmandate))/2).to_integral_value(rounding=ROUND_HALF_UP)
+                mean = int(( (Decimal(p.sitzkontingentVerteilung) + Decimal(p.direktmandate)) / 2 ).to_integral_value(rounding=ROUND_HALF_UP))
                 p.mindestsitzzahl = int(max(mean, p.direktmandate))
                 # print(nB, n, max(p.direktmandate - p.sitzkontingentVerteilung,0), p.mindestsitzzahl)
 

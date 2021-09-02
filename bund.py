@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 class Bund:
     def __init__(self):
         self.parteien = {}
@@ -40,7 +42,7 @@ class Bund:
             total += p.zweitstimmen
 
         for p in self.parteien.values():
-            p.percentageZweit = p.zweitstimmen / total
+            p.percentageZweit = Decimal(p.zweitstimmen) / total
             if p.percentageZweit > 0.05:
                 p.ueberHuerde = True
 

@@ -10,8 +10,7 @@ class Sainte_Lague_Schepers_executor17:
         for nB,pB in parteien.items():
             mindestsitzzahl = 0
             for n,p in pB.partei_in_land.items():
-                mean = ((Decimal(p.sitzkontingentVerteilung) + Decimal(p.direktmandate))/2).to_integral_value(rounding=ROUND_HALF_UP)
-                p.mindestsitzzahl = int(max(p.sitzkontingentVerteilung, p.direktmandate)) #TODO ohne mean und mit dieser oberverteilung ist vor wahlrechtsreform aus 2021/20
+                p.mindestsitzzahl = int(max(p.sitzkontingentVerteilung, p.direktmandate))
                 # print(nB, n, p.mindestsitzzahl)
 
                 mindestsitzzahl += p.mindestsitzzahl
@@ -23,10 +22,10 @@ class Sainte_Lague_Schepers_executor17:
         div = 1000000000000000000000000 # TODO max
         for n,p in parteien.items():
             # print(p.zweitstimmen, "/", p.mindestsitzzahl, "-", 0.5)
-            div = min(div, p.zweitstimmen / (p.mindestsitzzahl - 0.5))
+            div = min(div, Decimal(p.zweitstimmen) / (p.mindestsitzzahl - Decimal('0.5')))
         # print(div)
         for n,p in parteien.items():
-            p.sitze = round(p.zweitstimmen / div)
+            p.sitze = int((Decimal(p.zweitstimmen) / div).to_integral_value(rounding=ROUND_HALF_UP))
             # print(n, sitze)
 
         return {p.name: p.sitze for p in parteien.values()}, sum([p.sitze for p in parteien.values()])

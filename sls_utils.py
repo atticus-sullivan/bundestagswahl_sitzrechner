@@ -1,3 +1,5 @@
+from decimal import Decimal, ROUND_HALF_UP
+
 """
 One implementation of how seats can be distributed
 """
@@ -44,7 +46,7 @@ class Sainte_Lague_Schepers_utils:
     calculate distribution
     """
     def apply(self):
-        zutDivisor = sum([x for _,x in self.zweitwahl.items()]) / self.ges_sitze
+        zutDivisor = sum([x for _,x in self.zweitwahl.items()]) / Decimal(self.ges_sitze)
         while (s := sum([x for _,x in self.verteilung.items()])) != self.ges_sitze: #TODO passen die steps so, oder kann man die irgendwie schlau berechnen (oder immer +-10% oder so) check ob osziliert -> steps kleiner machen (dann aber bei 100 anfangen)
             if s < self.ges_sitze:
                 zutDivisor -= 1
@@ -56,5 +58,5 @@ class Sainte_Lague_Schepers_utils:
 
     def updateVert(self, zutDivisor):
         for p, stimmen in self.zweitwahl.items():
-            sitze = round(stimmen / zutDivisor) #TODO .5 -> würfeln nicht beachtet
-            self.verteilung.update({p: sitze})
+            sitze = (stimmen / zutDivisor).to_integral_value(rounding=ROUND_HALF_UP) #TODO .5 -> würfeln nicht beachtet
+            self.verteilung.update({p: int(sitze)})
