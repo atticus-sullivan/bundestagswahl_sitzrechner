@@ -75,8 +75,12 @@ class Abstimmung:
     def simulieren(self):
         self.kritische_fraktionen()
         self.berechne_banzhaf_indizes()
+
+        ret = {}
         for fraktion in self.fraktionen:
-            print(fraktion.get_name() + " - " + str(fraktion.get_banzhaf_index()))
+            ret[fraktion.get_name()] = fraktion.get_banzhaf_index()
+            # print(fraktion.get_name() + " - " + str(fraktion.get_banzhaf_index()))
+        return ret
     
     """
     parteien: dict[name:str -> sitze:int]
