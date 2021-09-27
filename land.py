@@ -10,7 +10,7 @@ class Land:
         self.parteien = {p.name: Partei_in_Land(p.name, self) for p in Partei.parteien.values()}
 
     def __str__(self):
-        return "{[Land] name:" + str(self.name) + ", id:" + str(self.id) + ", ewz:" + str(ewz) + ", sitzkontingent:" + str(self.sitzkontingent) + ", parteien:" + str(self.parteien) + "}"
+        return "{[Land] name:" + str(self.name) + ", id:" + str(self.id) + ", ewz:" + str(self.ewz) + ", sitzkontingent:" + str(self.sitzkontingent) + ", parteien:" + str(self.parteien) + "}"
     def __repr__(self):
         return str(self)
 

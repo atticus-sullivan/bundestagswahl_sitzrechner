@@ -18,6 +18,10 @@ class Partei:
         self.ueberhang = None
         self.percentageZweit = None
 
+    @classmethod
+    def clear(cls):
+        cls.parteien = {}
+
     def __str__(self):
         return "[Partei] name:" + str(self.name) + ", direktmandate:" + str(self.direktmandate) + ", ueberHuerde: " + str(self.ueberHuerde) + ", partei_in_land:" + str(self.partei_in_land) + ", zweitstimmen:" + str(self.zweitstimmen) + ", mindestsitzzahl:" + str(self.mindestsitzzahl) + ", sitze:" + str(self.sitze) + ", mindestsitzanspruch:" + str(self.mindestsitzanspruch) + ", ueberhang:" + str(self.ueberhang) + ", perctnageZweit:" + str(self.percentageZweit) + "}"
     def __repr__(self):
@@ -125,9 +129,6 @@ class Partei:
         if str(name) not in cls.parteien:
             cls.parteien[str(name)] = Partei(str(name))
         return cls.parteien[str(name)]
-
-    def __repr__(self):
-        return str(self.name)
 
     def add(self, partei_in_land):
         self.partei_in_land.update({partei_in_land.land.name: partei_in_land})

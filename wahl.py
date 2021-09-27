@@ -63,6 +63,7 @@ class Wahl:
     load election results from file fn
     """
     def load_from_csv(self, fn):
+        Partei.clear()
         with open(fn) as csv_file:
             csv_reader = list(csv.reader(csv_file, delimiter=';'))
             hdr = []
@@ -93,7 +94,7 @@ class Wahl:
                                 0 if row[2+i*4+19] == "" else int(row[2+i*4+19])
                                 )
 
-                    if csv_reader[j+1] == ['', '']:
+                    if all(map(lambda x: x == '', csv_reader[j+1])):
                         # bundesland
                         land = Land(row[1], row[0])
                         for p,st in votes.items():
