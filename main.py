@@ -13,11 +13,15 @@ def print_vert(vert, sitze, b, wahlrecht):
 
 if __name__ == "__main__":
     for y,f1, f2 in [
-            (2017, "btw17_kerg.csv", "btw17_bef.csv"),
-            (2021, "btw21_kerg_vorl.csv", "btw17_bef.csv")
+            ("2017", "btw17_kerg.csv", "btw17_bef.csv"),
+            ("2021", "btw21_kerg-vorl.csv", "btw17_bef.csv"),
+            ("2021-cxu", "btw21_kerg-vorl-cxu.csv", "btw17_bef.csv"),
             ]:
-        for wahlrecht in [2017, 2021]:
-            print(str(y))
+        for wahlrecht in [
+                2017,
+                2021,
+                ]:
+            print(y)
             w = Wahl(wahlrecht)
             w.load_from_csv(f1)
             w.load_bef(f2)

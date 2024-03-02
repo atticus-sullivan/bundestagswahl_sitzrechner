@@ -54,6 +54,7 @@ class Sainte_Lague_Schepers_utils:
                 zutDivisor += 1
             self.updateVert(zutDivisor)
         # print("Divisor:", zutDivisor, self.verteilung)
+        # print("sitze:", self.ges_sitze, "zutDivisor:", zutDivisor)
         return self.verteilung
 
     def updateVert(self, zutDivisor):

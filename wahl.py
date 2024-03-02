@@ -6,6 +6,8 @@ from partei import Partei
 from sls_executor17 import Sainte_Lague_Schepers_executor17
 from sls_executor21 import Sainte_Lague_Schepers_executor21
 
+counter = 0
+
 """
 Representation of an election
 """
@@ -54,6 +56,7 @@ class Wahl:
 
     def calc_sitze(self):
         self.remove_below_huerde()
+
         if self.year <= 2017:
             return Sainte_Lague_Schepers_executor17.apply(wahl=self)
         else:
@@ -81,7 +84,7 @@ class Wahl:
 
                 if started:
                     if len(csv_reader) == j+1: continue # bund
-                    if row == ['', '']: continue # leere Zeile
+                    if all(map(lambda x: x == '', row)): continue # leere Zeile
 
 
                     for i,_ in enumerate(row[19::4]):
@@ -89,9 +92,15 @@ class Wahl:
                         row[i*4+19] = row[i*4+19].replace(" ", "")
                         row[2+i*4+19] = row[2+i*4+19].replace(" ", "")
 
+                        if hdr[i*4+19] in votes:
+                            tup = votes[hdr[i*4+19]]
+                            # print("Warning: Partei", hdr[i*4+19], "tritt merhfach auf (in " + str(row[1]) + ")")
+                        else:
+                            tup = (0,0)
+
                         votes[hdr[i*4+19]] = (
-                                0 if row[i*4+19] == "" else int(row[i*4+19]),
-                                0 if row[2+i*4+19] == "" else int(row[2+i*4+19])
+                                0 + tup[0] if row[i*4+19] == "" else int(row[i*4+19]) + tup[0],
+                                0 + tup[1] if row[2+i*4+19] == "" else int(row[2+i*4+19]) + tup[1]
                                 )
 
                     if all(map(lambda x: x == '', csv_reader[j+1])):
@@ -107,6 +116,7 @@ class Wahl:
                     else:
                         # wahlkreis
                         direkt_tmp.append(max(votes, key=lambda k: votes[k][0]))
+                        votes = {}
 
     def load_bef(self, fn):
         with open(fn) as csv_file:
