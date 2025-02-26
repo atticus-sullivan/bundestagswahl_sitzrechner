@@ -1,0 +1,12 @@
+[package]
+name = "sitzrechner"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+csv = "1.1"
+serde = { version = "1.0", features = ["derive"] }
+serde_derive = "1.0"
+anyhow = "1.0"
+serde-xml-rs = "0.6.0"
+quick-xml = { version = "0.37.2", features = ["serialize"] }
