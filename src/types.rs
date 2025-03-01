@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use crate::parsing_types::{
     Ergebnis, Gebietsart, Gesamtergebnis, Gruppenart, Gruppenergebnis, Stimmart,
@@ -24,10 +24,10 @@ impl Gebiet {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ParteiWahlkreis {
-    erststimmen: Option<u64>,
-    zweitstimmen: Option<u64>,
+    pub erststimmen: Option<u64>,
+    pub zweitstimmen: Option<u64>,
 }
 impl From<&Gruppenergebnis> for ParteiWahlkreis {
     fn from(value: &Gruppenergebnis) -> Self {
@@ -42,16 +42,16 @@ impl From<&Gruppenergebnis> for ParteiWahlkreis {
             .find(|i| i.stimmart == Stimmart::LISTE)
             .map(|x| x.anzahl);
         Self {
-            erststimmen,
-            zweitstimmen,
+            erststimmen: erststimmen.or(Some(0)),
+            zweitstimmen: zweitstimmen.or(Some(0)),
         }
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ParteiLand {
-    erststimmen: Option<u64>,
-    zweitstimmen: Option<u64>,
+    pub erststimmen: Option<u64>,
+    pub zweitstimmen: Option<u64>,
 }
 impl From<&Gruppenergebnis> for ParteiLand {
     fn from(value: &Gruppenergebnis) -> Self {
@@ -66,16 +66,16 @@ impl From<&Gruppenergebnis> for ParteiLand {
             .find(|i| i.stimmart == Stimmart::LISTE)
             .map(|x| x.anzahl);
         Self {
-            erststimmen,
-            zweitstimmen,
+            erststimmen: erststimmen.or(Some(0)),
+            zweitstimmen: zweitstimmen.or(Some(0)),
         }
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ParteiBund {
-    erststimmen: Option<u64>,
-    zweitstimmen: Option<u64>,
+    pub erststimmen: Option<u64>,
+    pub zweitstimmen: Option<u64>,
 }
 impl From<&Gruppenergebnis> for ParteiBund {
     fn from(value: &Gruppenergebnis) -> Self {
@@ -90,28 +90,28 @@ impl From<&Gruppenergebnis> for ParteiBund {
             .find(|i| i.stimmart == Stimmart::LISTE)
             .map(|x| x.anzahl);
         Self {
-            erststimmen,
-            zweitstimmen,
+            erststimmen: erststimmen.or(Some(0)),
+            zweitstimmen: zweitstimmen.or(Some(0)),
         }
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Bund {
-    laender: Vec<Land>,
-    parteien: HashMap<GruppeNr, ParteiBund>,
+    pub laender: Vec<Land>,
+    pub parteien: BTreeMap<GruppeNr, ParteiBund>,
 }
 impl Bund {
     fn new(
         laender: Vec<(String, GebietNr)>,
-        mut laender_wahlkreise: HashMap<GebietNr, Vec<(String, GebietNr)>>,
-        mut wahlkreise_parteien: HashMap<
+        mut laender_wahlkreise: BTreeMap<GebietNr, Vec<(String, GebietNr)>>,
+        mut wahlkreise_parteien: BTreeMap<
             GebietNr,
-            HashMap<GebietNr, HashMap<GruppeNr, ParteiWahlkreis>>,
+            BTreeMap<GebietNr, BTreeMap<GruppeNr, ParteiWahlkreis>>,
         >,
-        mut laender_parteien: HashMap<GebietNr, HashMap<GruppeNr, ParteiLand>>,
-        parteien: HashMap<GruppeNr, ParteiBund>,
-        struktur: &HashMap<GebietNr, Gebiet>,
+        mut laender_parteien: BTreeMap<GebietNr, BTreeMap<GruppeNr, ParteiLand>>,
+        parteien: BTreeMap<GruppeNr, ParteiBund>,
+        struktur: &BTreeMap<GebietNr, Gebiet>,
     ) -> Result<Self> {
         let laender = laender
             .iter()
@@ -131,21 +131,21 @@ impl Bund {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Land {
-    name: String,
-    einwohner: f64,
-    parteien: HashMap<GruppeNr, ParteiLand>,
-    wahlkreise: Vec<Wahlkreis>,
+    pub name: String,
+    pub einwohner: f64,
+    pub parteien: BTreeMap<GruppeNr, ParteiLand>,
+    pub wahlkreise: Vec<Wahlkreis>,
 }
 impl Land {
     fn new(
         name: String,
         gebietsnummer: GebietNr,
         wahlkreise: Vec<(String, GebietNr)>,
-        mut wahlkreise_parteien: HashMap<GebietNr, HashMap<GruppeNr, ParteiWahlkreis>>,
-        parteien: HashMap<GruppeNr, ParteiLand>,
-        struktur: &HashMap<GebietNr, Gebiet>,
+        mut wahlkreise_parteien: BTreeMap<GebietNr, BTreeMap<GruppeNr, ParteiWahlkreis>>,
+        parteien: BTreeMap<GruppeNr, ParteiLand>,
+        struktur: &BTreeMap<GebietNr, Gebiet>,
     ) -> Result<Self> {
         let wahlkreise = wahlkreise
             .iter()
@@ -160,11 +160,15 @@ impl Land {
                 )
             })
             .collect::<Result<Vec<_>>>()?;
+        println!(
+            "{name}: {gebietsnummer} -> {:#?}",
+            struktur.get(&(gebietsnummer + 900)).map(|x| x.einwohner)
+        );
         Ok(Self {
             wahlkreise,
             parteien,
             einwohner: struktur
-                .get(&gebietsnummer)
+                .get(&(gebietsnummer + 900))
                 .context("population not found for Land")?
                 .einwohner,
             name,
@@ -172,17 +176,17 @@ impl Land {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Wahlkreis {
-    name: String,
-    parteien: HashMap<GruppeNr, ParteiWahlkreis>,
+    pub name: String,
+    pub parteien: BTreeMap<GruppeNr, ParteiWahlkreis>,
 }
 
 impl Wahlkreis {
     fn new(
         name: String,
         _gebietsnummer: GebietNr,
-        parteien: HashMap<GruppeNr, ParteiWahlkreis>,
+        parteien: BTreeMap<GruppeNr, ParteiWahlkreis>,
     ) -> Result<Self> {
         Ok(Self { parteien, name })
     }
@@ -190,19 +194,20 @@ impl Wahlkreis {
 
 pub fn convert_data(
     stimmen: Gesamtergebnis,
-    struktur: &HashMap<GebietNr, Gebiet>,
-) -> Result<(Bund, HashMap<GruppeNr, String>)> {
-    let mut wahlkreise_parteien: HashMap<
+    struktur: &BTreeMap<GebietNr, Gebiet>,
+) -> Result<(Bund, BTreeMap<GruppeNr, String>)> {
+    let mut wahlkreise_parteien: BTreeMap<
         GebietNr,
-        HashMap<GebietNr, HashMap<GruppeNr, ParteiWahlkreis>>,
+        BTreeMap<GebietNr, BTreeMap<GruppeNr, ParteiWahlkreis>>,
     > = Default::default();
-    let mut laender_parteien: HashMap<GebietNr, HashMap<GruppeNr, ParteiLand>> = Default::default();
-    let mut bund_parteien: HashMap<GruppeNr, ParteiBund> = Default::default();
+    let mut laender_parteien: BTreeMap<GebietNr, BTreeMap<GruppeNr, ParteiLand>> =
+        Default::default();
+    let mut bund_parteien: BTreeMap<GruppeNr, ParteiBund> = Default::default();
 
     let mut bund_laender: Vec<(String, GebietNr)> = Default::default();
-    let mut laender_wahlkreise: HashMap<GebietNr, Vec<(String, GebietNr)>> = Default::default();
+    let mut laender_wahlkreise: BTreeMap<GebietNr, Vec<(String, GebietNr)>> = Default::default();
 
-    let mut parteinr_name: HashMap<GruppeNr, String> = Default::default();
+    let mut parteinr_name: BTreeMap<GruppeNr, String> = Default::default();
 
     for ge in stimmen.gebietsergebnisse.iter() {
         match ge.gebietsart {
@@ -222,10 +227,9 @@ pub fn convert_data(
                         Ergebnis::Direktergebnis(_) => None,
                     })
                     .filter_map(|i| ParteiBund::try_from(i).ok().map(|x| (i.gruppe, x)))
-                    .collect::<HashMap<_, _>>();
+                    .collect::<BTreeMap<_, _>>();
             }
             Gebietsart::LAND => {
-                println!("{:#?}", ge);
                 // register in parent structure (bund)
                 bund_laender.push((ge.gebiet_text.to_owned(), ge.gebietsnummer));
                 // collect parties in vector
@@ -244,7 +248,7 @@ pub fn convert_data(
                             Ergebnis::Direktergebnis(_) => None,
                         })
                         .filter_map(|i| ParteiLand::try_from(i).ok().map(|x| (i.gruppe, x)))
-                        .collect::<HashMap<_, _>>(),
+                        .collect::<BTreeMap<_, _>>(),
                 );
             }
             Gebietsart::WAHLKREIS => {
@@ -278,7 +282,7 @@ pub fn convert_data(
                             .filter_map(|i| {
                                 ParteiWahlkreis::try_from(i).ok().map(|x| (i.gruppe, x))
                             })
-                            .collect::<HashMap<_, _>>(),
+                            .collect::<BTreeMap<_, _>>(),
                     );
             }
         }

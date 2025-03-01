@@ -34,16 +34,16 @@ pub struct Gebietsergebnis {
     pub ergebnisse: Vec<Ergebnis>,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub enum Ergebnis {
     Gruppenergebnis(Gruppenergebnis),
     Direktergebnis(Direktergebnis),
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub struct Direktergebnis {}
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub struct Gruppenergebnis {
     #[serde(rename = "@Gruppe")]
     pub gruppe: GruppeNr,
@@ -56,7 +56,7 @@ pub struct Gruppenergebnis {
     pub stimmergebnisse: Vec<Stimmergebnis>,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub struct Stimmergebnis {
     #[serde(rename = "@Stimmart")]
     pub stimmart: Stimmart,
@@ -74,7 +74,7 @@ pub struct Stimmergebnis {
     // ProzentDifferenz
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub enum Stimmart {
     DIREKT,
     LISTE,
@@ -88,7 +88,7 @@ pub enum Gebietsart {
     WAHLKREIS,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub enum Gruppenart {
     PARTEI,
     ALLGEMEIN, // waehlende / wahlberechtigte / gueltig / ungueltig

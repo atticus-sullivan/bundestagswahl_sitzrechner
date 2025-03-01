@@ -1,7 +1,7 @@
 use anyhow::{Context, Result};
 use core::str;
 use csv::ReaderBuilder;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
@@ -17,9 +17,9 @@ pub fn parse_xml() -> Result<Gesamtergebnis> {
     Ok(x)
 }
 
-pub fn parse_csv() -> Result<HashMap<GebietNr, Gebiet>> {
+pub fn parse_csv() -> Result<BTreeMap<GebietNr, Gebiet>> {
     let file = File::open(
-        "/media/daten/coding/bundestagswahl_sitzrechner/data/2021-btw21_strukturdaten.csv",
+        "/media/daten/coding/bundestagswahl_sitzrechner/data/2021-btw21_strukturdaten_corr.csv",
     )?;
     let mut buf_reader = BufReader::new(file);
 
@@ -54,7 +54,7 @@ pub fn parse_csv() -> Result<HashMap<GebietNr, Gebiet>> {
     let mut population_column = None;
     // Search for the column with a name containing the string "Bevölkerung" followed by a year
     for (i, header) in headers.iter().enumerate() {
-        if header.starts_with("Bevölkerung am") && header.ends_with("Insgesamt (in 1000)") {
+        if header.starts_with("Bevölkerung am") && header.ends_with("Deutsche (in 1000)") {
             population_column = Some(i);
             break;
         }
@@ -62,7 +62,7 @@ pub fn parse_csv() -> Result<HashMap<GebietNr, Gebiet>> {
     let population_column =
         population_column.context("no column containing the total population found")?;
 
-    let mut gebiete = HashMap::new();
+    let mut gebiete = BTreeMap::new();
     // Process the CSV records
     for result in rdr.records() {
         let record = result?;
@@ -78,7 +78,8 @@ pub fn parse_csv() -> Result<HashMap<GebietNr, Gebiet>> {
             .context("unable to retrieve the population")?
             .replace(',', ".")
             .parse::<f64>()
-            .context("failed parsing the population")?;
+            .context("failed parsing the population")?
+            * 1000.0;
 
         gebiete.insert(
             gebietsnummer,
