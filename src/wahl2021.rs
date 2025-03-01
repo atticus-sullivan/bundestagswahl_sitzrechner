@@ -1,16 +1,24 @@
 use anyhow::{bail, Context, Result};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashSet};
 
 use crate::types::{Bund, GruppeNr, Land, ParteiBund};
 
 use crate::sls::sls;
 use crate::wahl;
 
-pub fn calc(bund: Bund) -> Result<(BTreeMap<GruppeNr, u64>, u64)> {
+pub fn calc(bund: Bund, parteinr_name: &BTreeMap<GruppeNr, String>) -> Result<(BTreeMap<GruppeNr, u64>, u64)> {
     let total_seats = 598;
     let direktmandate = wahl::wahlkreismandate(&bund);
 
-    let bund = wahl::huerde(bund, &direktmandate, 3, 0.05)?;
+    let keep = parteinr_name.iter().filter_map(|(nr,name)| {
+        if name == "SSW" {
+            Some(*nr)
+        } else {
+            None
+        }
+    }).collect::<HashSet<_>>();
+
+    let bund = wahl::huerde(bund, &direktmandate, 3, 0.05, keep)?;
 
     let sk = sitzkontingent(&bund.laender, total_seats)?;
     println!("1.Oberverteilung: {:#?}", sk);

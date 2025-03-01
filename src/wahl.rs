@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashSet};
 
 use anyhow::{Context, Result};
 
@@ -35,6 +35,7 @@ pub fn huerde(
     wkm: &Vec<BTreeMap<GruppeNr, u64>>,
     wkm_huerde: u64,
     prozent_huerde: f64,
+    keep: HashSet<GruppeNr>,
 ) -> Result<Bund> {
     let total_votes_bund = bund
         .parteien
@@ -57,6 +58,7 @@ pub fn huerde(
             Some(z) => {
                 z as f64 / total_votes_bund >= prozent_huerde
                     || total_wkm.get(i).unwrap_or(&0) >= &wkm_huerde
+                    || keep.contains(i)
             }
             None => false,
         })

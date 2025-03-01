@@ -38,7 +38,7 @@ fn main() -> Result<()> {
     );
 
     // wahl::wahl_2021::calc();
-    let (sitze, total) = wahl2021::calc(bund.clone())?;
+    let (sitze, total) = wahl2021::calc(bund.clone(), &parteinr_name)?;
     println!();
     println!("Total sitze {}", total);
     for (p, s) in sitze.iter() {
