@@ -160,10 +160,6 @@ impl Land {
                 )
             })
             .collect::<Result<Vec<_>>>()?;
-        println!(
-            "{name}: {gebietsnummer} -> {:#?}",
-            struktur.get(&(gebietsnummer + 900)).map(|x| x.einwohner)
-        );
         Ok(Self {
             wahlkreise,
             parteien,

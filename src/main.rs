@@ -6,11 +6,17 @@ mod types;
 mod wahl;
 mod wahl2021;
 
-use std::collections::{BTreeMap, HashMap};
+use std::collections::BTreeMap;
+
+use log::debug;
+use env_logger::Logger;
 
 use anyhow::Result;
 
 fn main() -> Result<()> {
+    // let logger = Logger::from_default_env();
+    env_logger::init();
+
     let stimmen = parsing::parse_xml()?;
     let struktur = parsing::parse_csv()?;
 
@@ -18,9 +24,9 @@ fn main() -> Result<()> {
 
     // println!("{:#?}", bund);
     // println!("{:#?}", bund_laender);
-    println!("{:#?}", parteinr_name);
+    debug!("{:#?}", parteinr_name);
 
-    println!(
+    debug!(
         "{:#?}",
         bund.laender
             .iter()
@@ -28,7 +34,7 @@ fn main() -> Result<()> {
             .map(|(i, l)| (i, l.name.to_owned()))
             .collect::<BTreeMap<_, _>>()
     );
-    println!(
+    debug!(
         "{:#?}",
         bund.laender
             .iter()
@@ -39,7 +45,6 @@ fn main() -> Result<()> {
 
     // wahl::wahl_2021::calc();
     let (sitze, total) = wahl2021::calc(bund.clone(), &parteinr_name)?;
-    println!();
     println!("Total sitze {}", total);
     for (p, s) in sitze.iter() {
         println!("{} -> {}", parteinr_name[p], s);

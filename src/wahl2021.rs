@@ -1,5 +1,6 @@
 use anyhow::{bail, Context, Result};
 use std::collections::{BTreeMap, HashSet};
+use log::debug;
 
 use crate::types::{Bund, GruppeNr, Land, ParteiBund};
 
@@ -21,13 +22,13 @@ pub fn calc(bund: Bund, parteinr_name: &BTreeMap<GruppeNr, String>) -> Result<(B
     let bund = wahl::huerde(bund, &direktmandate, 3, 0.05, keep)?;
 
     let sk = sitzkontingent(&bund.laender, total_seats)?;
-    println!("1.Oberverteilung: {:#?}", sk);
+    debug!("1.Oberverteilung: {:#?}", sk);
 
     let uv = unterverteilung(&bund.laender, &sk)?;
-    println!("1.Unterverteilung: {:#?}", uv);
+    debug!("1.Unterverteilung: {:#?}", uv);
 
     let msa = mindestsitzzahl(&bund.laender, &bund.parteien, &uv, &direktmandate)?;
-    println!("Mindestsitzzahlen: {:#?}", msa);
+    debug!("Mindestsitzzahlen: {:#?}", msa);
 
     let (fin, seats) = oberverteilung(&bund.parteien, &msa)?;
 
