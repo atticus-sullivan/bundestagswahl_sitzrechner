@@ -120,16 +120,17 @@ fn oberverteilung(
                 .collect::<Result<_>>()?,
             total_seats,
         );
-        let ueberhang = msa
+
+        let unausgeglichener_ueberhang = msz
             .iter()
             .map(|(i, a)| (*i, (*a as i64 - dist[i] as i64).max(0) as u64))
             .collect::<BTreeMap<_, _>>();
-        let ueberhang_cnt = ueberhang.iter().map(|(_, u)| u).sum::<u64>();
+        let unausgeglichener_ueberhang_cnt = unausgeglichener_ueberhang.iter().map(|(_, u)| u).sum::<u64>();
 
-        if ueberhang_cnt <= 3 {
+        if unausgeglichener_ueberhang_cnt <= 3 {
             return Ok((
-                dist.iter().map(|(i, s)| (*i, s + ueberhang[i])).collect(),
-                total_seats + ueberhang_cnt,
+                dist.iter().map(|(i, s)| (*i, s + unausgeglichener_ueberhang[i])).collect(),
+                total_seats + unausgeglichener_ueberhang_cnt,
             ));
         }
     }
