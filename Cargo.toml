@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Lukas Heindl
+#
+# SPDX-License-Identifier: MIT
+
 [package]
 name = "sitzrechner"
 version = "0.1.0"

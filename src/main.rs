@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Lukas Heindl
+//
+// SPDX-License-Identifier: MIT
+
 mod parsing;
 mod parsing_types;
 mod sls;

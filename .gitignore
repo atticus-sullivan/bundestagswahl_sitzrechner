@@ -1,2 +1,6 @@
+# SPDX-FileCopyrightText: 2025 Lukas Heindl
+#
+# SPDX-License-Identifier: MIT
+
 __pycache__
 target/

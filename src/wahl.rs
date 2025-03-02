@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Lukas Heindl
+//
+// SPDX-License-Identifier: MIT
+
 use std::collections::{BTreeMap, HashSet};
 
 use anyhow::Result;

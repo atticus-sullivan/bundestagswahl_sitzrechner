@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Lukas Heindl
+//
+// SPDX-License-Identifier: MIT
+
 use std::{collections::BTreeMap, fmt::Display};
 
 pub fn sls<T>(xs: BTreeMap<T, f64>, total: u64) -> BTreeMap<T, u64>

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Lukas Heindl
+//
+// SPDX-License-Identifier: MIT
+
 use anyhow::{Context, Result};
 use std::collections::BTreeMap;
 
