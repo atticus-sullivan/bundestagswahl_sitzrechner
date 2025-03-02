@@ -125,7 +125,7 @@ fn mindestsitzzahl(
 ) -> Result<BTreeMap<GruppeNr, u64>> {
     let mut msa = BTreeMap::new();
 
-    for (i, _) in parteien_bund.iter() {
+    for i in parteien_bund.keys() {
         let mut msz = 0;
         let mut skv = 0;
         for (j, _) in laender.iter().enumerate() {
@@ -161,7 +161,7 @@ fn oberverteilung(
     parteien_bund: &BTreeMap<GruppeNr, ParteiBund>,
     msz: &BTreeMap<GruppeNr, u64>,
 ) -> Result<(BTreeMap<GruppeNr, u64>, u64)> {
-    let total_seats: u64 = msz.iter().map(|(_, v)| v).sum();
+    let total_seats: u64 = msz.values().sum();
     // [1] -> § 6 Abs.5
     // "Die Zahl der [...] Sitze wird so lange erhöht, bis [...]"
     for total_seats in total_seats.. {
@@ -190,8 +190,7 @@ fn oberverteilung(
             .map(|(i, a)| (*i, (*a as i64 - dist[i] as i64).max(0) as u64))
             .collect::<BTreeMap<_, _>>();
         let unausgeglichener_ueberhang_cnt = unausgeglichener_ueberhang
-            .iter()
-            .map(|(_, u)| u)
+            .values()
             .sum::<u64>();
 
         // [1] -> § 6 Abs.5 Satz 4

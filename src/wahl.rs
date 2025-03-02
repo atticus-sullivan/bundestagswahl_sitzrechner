@@ -39,8 +39,8 @@ pub fn huerde(
 ) -> Result<Bund> {
     let total_votes_bund = bund
         .parteien
-        .iter()
-        .filter_map(|(_, p)| p.zweitstimmen)
+        .values()
+        .filter_map(|p| p.zweitstimmen)
         .sum::<u64>() as f64;
 
     let total_wkm =
