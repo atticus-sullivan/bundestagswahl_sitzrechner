@@ -120,9 +120,15 @@ impl Bund {
                 Land::new(
                     i.0.clone(),
                     *nr,
-                    laender_wahlkreise.remove(nr).with_context(|| format!("land {nr} not found in laender_wahlkreise"))?,
-                    wahlkreise_parteien.remove(nr).with_context(|| format!("land {nr} not found in wahlkreise_parteien"))?,
-                    laender_parteien.remove(nr).with_context(|| format!("land {nr} not found in laender_parteien"))?,
+                    laender_wahlkreise
+                        .remove(nr)
+                        .with_context(|| format!("land {nr} not found in laender_wahlkreise"))?,
+                    wahlkreise_parteien
+                        .remove(nr)
+                        .with_context(|| format!("land {nr} not found in wahlkreise_parteien"))?,
+                    laender_parteien
+                        .remove(nr)
+                        .with_context(|| format!("land {nr} not found in laender_parteien"))?,
                     struktur,
                 )
             })
@@ -165,7 +171,13 @@ impl Land {
             parteien,
             einwohner: struktur
                 .get(&(gebietsnummer + 900))
-                .with_context(|| format!("population not found for Land {}/{}", gebietsnummer, gebietsnummer + 900))?
+                .with_context(|| {
+                    format!(
+                        "population not found for Land {}/{}",
+                        gebietsnummer,
+                        gebietsnummer + 900
+                    )
+                })?
                 .einwohner,
             name,
         })
@@ -259,7 +271,9 @@ pub fn convert_data(
                     .push((ge.gebiet_text.to_owned(), ge.gebietsnummer));
                 // collect parties in vector
                 wahlkreise_parteien
-                    .entry(ge.ueg_gebietsnummer.with_context(|| format!("no ueg_gebietsnummer set for {}", ge.gebiet_text))?)
+                    .entry(ge.ueg_gebietsnummer.with_context(|| {
+                        format!("no ueg_gebietsnummer set for {}", ge.gebiet_text)
+                    })?)
                     .or_default()
                     .insert(
                         ge.gebietsnummer,

@@ -189,9 +189,7 @@ fn oberverteilung(
             .iter()
             .map(|(i, a)| (*i, (*a as i64 - dist[i] as i64).max(0) as u64))
             .collect::<BTreeMap<_, _>>();
-        let unausgeglichener_ueberhang_cnt = unausgeglichener_ueberhang
-            .values()
-            .sum::<u64>();
+        let unausgeglichener_ueberhang_cnt = unausgeglichener_ueberhang.values().sum::<u64>();
 
         // [1] -> § 6 Abs.5 Satz 4
         // "Bei der Erhöhung bleiben in den Wahlkreisen errungene Sitze [...] bis zu einer Zahl von
