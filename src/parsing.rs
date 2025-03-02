@@ -75,10 +75,10 @@ pub fn parse_csv() -> Result<BTreeMap<GebietNr, Gebiet>> {
         // Find population from variable column
         let population: f64 = record
             .get(population_column)
-            .context("unable to retrieve the population")?
+            .with_context(|| format!("unable to retrieve the population for {gebietsnummer} from column {population_column}"))?
             .replace(',', ".")
             .parse::<f64>()
-            .context("failed parsing the population")?
+            .with_context(|| format!("failed parsing the population for {gebietsnummer} from column {population_column}"))?
             * 1000.0;
 
         gebiete.insert(
