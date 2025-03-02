@@ -35,7 +35,7 @@ pub fn parse_csv(path: &Path) -> Result<BTreeMap<GebietNr, Gebiet>> {
     while line.starts_with("#") {
         // Clear line for next iteration
         line.clear();
-        if buf_reader.read_line(&mut line)? <= 0 {
+        if buf_reader.read_line(&mut line)? == 0 {
             break;
         }
     }

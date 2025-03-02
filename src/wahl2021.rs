@@ -66,7 +66,7 @@ pub fn calc(
 /// Wird auch *1.Oberverteilung* genannt
 ///
 /// returns `land_idx -> kontingent`
-fn sitzkontingent(laender: &Vec<Land>, base_seats: u64) -> Result<BTreeMap<usize, u64>> {
+fn sitzkontingent(laender: &[Land], base_seats: u64) -> Result<BTreeMap<usize, u64>> {
     // [1] -> § 6 Abs.2 Satz 1
     // "[...] Gesamtzahl der Sitze [...] [wird] den Ländern nach deren Bevölkerungsanteil [...] zugeordnet"
     let dist = sls(
@@ -86,7 +86,7 @@ fn sitzkontingent(laender: &Vec<Land>, base_seats: u64) -> Result<BTreeMap<usize
 ///
 /// returns `land_idx -> parteiNr -> Sitze`
 fn unterverteilung(
-    laender: &Vec<Land>,
+    laender: &[Land],
     sk: &BTreeMap<usize, u64>,
 ) -> Result<BTreeMap<usize, BTreeMap<GruppeNr, u64>>> {
     let mut uv = BTreeMap::new();
@@ -119,10 +119,10 @@ fn unterverteilung(
 ///
 /// returns `parteiNr -> Sitze`
 fn mindestsitzzahl(
-    laender: &Vec<Land>,
+    laender: &[Land],
     parteien_bund: &BTreeMap<GruppeNr, ParteiBund>,
     uv: &BTreeMap<usize, BTreeMap<GruppeNr, u64>>,
-    direktmandate: &Vec<BTreeMap<GruppeNr, u64>>,
+    direktmandate: &[BTreeMap<GruppeNr, u64>],
 ) -> Result<BTreeMap<GruppeNr, u64>> {
     let mut msa = BTreeMap::new();
 

@@ -35,12 +35,12 @@ impl From<&Gruppenergebnis> for ParteiWahlkreis {
         let erststimmen = value
             .stimmergebnisse
             .iter()
-            .find(|i| i.stimmart == Stimmart::DIREKT)
+            .find(|i| i.stimmart == Stimmart::Direkt)
             .map(|x| x.anzahl);
         let zweitstimmen = value
             .stimmergebnisse
             .iter()
-            .find(|i| i.stimmart == Stimmart::LISTE)
+            .find(|i| i.stimmart == Stimmart::Liste)
             .map(|x| x.anzahl);
         Self {
             erststimmen: erststimmen.unwrap_or(Some(0)),
@@ -60,12 +60,12 @@ impl From<&Gruppenergebnis> for ParteiLand {
         let erststimmen = value
             .stimmergebnisse
             .iter()
-            .find(|i| i.stimmart == Stimmart::DIREKT)
+            .find(|i| i.stimmart == Stimmart::Direkt)
             .map(|x| x.anzahl);
         let zweitstimmen = value
             .stimmergebnisse
             .iter()
-            .find(|i| i.stimmart == Stimmart::LISTE)
+            .find(|i| i.stimmart == Stimmart::Liste)
             .map(|x| x.anzahl);
         Self {
             erststimmen: erststimmen.unwrap_or(Some(0)),
@@ -85,12 +85,12 @@ impl From<&Gruppenergebnis> for ParteiBund {
         let erststimmen = value
             .stimmergebnisse
             .iter()
-            .find(|i| i.stimmart == Stimmart::DIREKT)
+            .find(|i| i.stimmart == Stimmart::Direkt)
             .map(|x| x.anzahl);
         let zweitstimmen = value
             .stimmergebnisse
             .iter()
-            .find(|i| i.stimmart == Stimmart::LISTE)
+            .find(|i| i.stimmart == Stimmart::Liste)
             .map(|x| x.anzahl);
         Self {
             erststimmen: erststimmen.unwrap_or(Some(0)),
@@ -223,14 +223,14 @@ pub fn convert_data(
 
     for ge in stimmen.gebietsergebnisse.iter() {
         match ge.gebietsart {
-            Gebietsart::BUND => {
+            Gebietsart::Bund => {
                 // collect parties in vector
                 bund_parteien = ge
                     .ergebnisse
                     .iter()
                     .filter_map(|i| match i {
                         Ergebnis::Gruppenergebnis(gruppenergebnis) => {
-                            if let Gruppenart::PARTEI = gruppenergebnis.gruppenart {
+                            if let Gruppenart::Partei = gruppenergebnis.gruppenart {
                                 Some(gruppenergebnis)
                             } else {
                                 None
@@ -238,10 +238,10 @@ pub fn convert_data(
                         }
                         Ergebnis::Direktergebnis(_) => None,
                     })
-                    .filter_map(|i| ParteiBund::try_from(i).ok().map(|x| (i.gruppe, x)))
+                    .map(|i| (i.gruppe, ParteiBund::from(i)))
                     .collect::<BTreeMap<_, _>>();
             }
-            Gebietsart::LAND => {
+            Gebietsart::Land => {
                 // register in parent structure (bund)
                 bund_laender.push((ge.gebiet_text.to_owned(), ge.gebietsnummer));
                 // collect parties in vector
@@ -251,7 +251,7 @@ pub fn convert_data(
                         .iter()
                         .filter_map(|i| match i {
                             Ergebnis::Gruppenergebnis(gruppenergebnis) => {
-                                if let Gruppenart::PARTEI = gruppenergebnis.gruppenart {
+                                if let Gruppenart::Partei = gruppenergebnis.gruppenart {
                                     Some(gruppenergebnis)
                                 } else {
                                     None
@@ -259,11 +259,11 @@ pub fn convert_data(
                             }
                             Ergebnis::Direktergebnis(_) => None,
                         })
-                        .filter_map(|i| ParteiLand::try_from(i).ok().map(|x| (i.gruppe, x)))
+                        .map(|i| (i.gruppe, ParteiLand::from(i)))
                         .collect::<BTreeMap<_, _>>(),
                 );
             }
-            Gebietsart::WAHLKREIS => {
+            Gebietsart::Wahlkreis => {
                 // register in parent structure (land)
                 laender_wahlkreise
                     .entry(
@@ -285,7 +285,7 @@ pub fn convert_data(
                             .iter()
                             .filter_map(|i| match i {
                                 Ergebnis::Gruppenergebnis(gruppenergebnis) => {
-                                    if let Gruppenart::PARTEI = gruppenergebnis.gruppenart {
+                                    if let Gruppenart::Partei = gruppenergebnis.gruppenart {
                                         Some(gruppenergebnis)
                                     } else {
                                         None
@@ -293,9 +293,7 @@ pub fn convert_data(
                                 }
                                 Ergebnis::Direktergebnis(_) => None,
                             })
-                            .filter_map(|i| {
-                                ParteiWahlkreis::try_from(i).ok().map(|x| (i.gruppe, x))
-                            })
+                            .map(|i| (i.gruppe, ParteiWahlkreis::from(i)))
                             .collect::<BTreeMap<_, _>>(),
                     );
             }
@@ -303,7 +301,7 @@ pub fn convert_data(
 
         parteinr_name.extend(ge.ergebnisse.iter().filter_map(|i| match i {
             Ergebnis::Gruppenergebnis(gruppenergebnis) => {
-                if let Gruppenart::PARTEI = gruppenergebnis.gruppenart {
+                if let Gruppenart::Partei = gruppenergebnis.gruppenart {
                     Some((gruppenergebnis.gruppe, gruppenergebnis.name.to_owned()))
                 } else {
                     None

@@ -7,10 +7,8 @@ use crate::types::{Bund, GruppeNr, Land, ParteiWahlkreis};
 fn count_keys(vec: Vec<Option<(&i16, &ParteiWahlkreis)>>) -> BTreeMap<i16, u64> {
     let mut map: BTreeMap<i16, u64> = BTreeMap::new();
 
-    for item in vec {
-        if let Some((key, _)) = item {
-            *map.entry(*key).or_insert(0) += 1;
-        }
+    for (key, _) in vec.into_iter().flatten() {
+        *map.entry(*key).or_insert(0) += 1;
     }
 
     map
@@ -32,7 +30,7 @@ pub fn wahlkreismandate(bund: &Bund) -> Vec<BTreeMap<GruppeNr, u64>> {
 
 pub fn huerde(
     bund: Bund,
-    wkm: &Vec<BTreeMap<GruppeNr, u64>>,
+    wkm: &[BTreeMap<GruppeNr, u64>],
     wkm_huerde: u64,
     prozent_huerde: f64,
     keep: HashSet<GruppeNr>,
