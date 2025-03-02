@@ -86,16 +86,16 @@ fn mindestsitzzahl(
 
     for (i, _) in parteien_bund.iter() {
         let mut msz = 0;
+        let mut skv = 0;
         for (j, _) in laender.iter().enumerate() {
             // makes sense as eg no entry for CSU in all laender except for Bayern
             let skv_p = *uv[&j].get(i).unwrap_or(&0);
             let dm_p = *direktmandate[j].get(i).unwrap_or(&0);
             let mean = ((skv_p + dm_p) as f64 / 2.0).round() as u64;
+            skv += skv_p;
             msz += mean.max(dm_p);
-            // println!("Partei {i} | Land {j} | sk {skv_p} | dm {dm_p} | m {mean} | mx {} | cum {msz}", mean.max(dm_p))
         }
-        // msa.insert(*i, msz.max(skv));
-        msa.insert(*i, msz);
+        msa.insert(*i, msz.max(skv));
     }
     Ok(msa)
 }
