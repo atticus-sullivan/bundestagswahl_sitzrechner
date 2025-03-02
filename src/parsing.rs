@@ -4,23 +4,20 @@ use csv::ReaderBuilder;
 use std::collections::BTreeMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use std::path::Path;
 
 use crate::parsing_types::Gesamtergebnis;
 use crate::types::{Gebiet, GebietNr};
 
-pub fn parse_xml() -> Result<Gesamtergebnis> {
-    let file = File::open(
-        "/media/daten/coding/bundestagswahl_sitzrechner/data/2021-gesamtergebnis_01.xml",
-    )?;
+pub fn parse_xml(path: &Path) -> Result<Gesamtergebnis> {
+    let file = File::open(path)?;
     let buf_reader = BufReader::new(file);
     let x: Gesamtergebnis = quick_xml::de::from_reader(buf_reader)?;
     Ok(x)
 }
 
-pub fn parse_csv() -> Result<BTreeMap<GebietNr, Gebiet>> {
-    let file = File::open(
-        "/media/daten/coding/bundestagswahl_sitzrechner/data/2021-btw21_strukturdaten_corr.csv",
-    )?;
+pub fn parse_csv(path: &Path) -> Result<BTreeMap<GebietNr, Gebiet>> {
+    let file = File::open(path)?;
     let mut buf_reader = BufReader::new(file);
 
     // Manually advance the file pointer by reading through lines

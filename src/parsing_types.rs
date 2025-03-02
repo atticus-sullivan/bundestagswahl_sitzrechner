@@ -60,8 +60,12 @@ pub struct Gruppenergebnis {
 pub struct Stimmergebnis {
     #[serde(rename = "@Stimmart")]
     pub stimmart: Stimmart,
-    #[serde(rename = "@Anzahl")]
-    pub anzahl: u64,
+    #[serde(
+        rename = "@Anzahl",
+        default,
+        deserialize_with = "deserialize_maybe_nan"
+    )]
+    pub anzahl: Option<u64>,
     #[serde(
         rename = "@Prozent",
         default,
@@ -97,16 +101,17 @@ pub enum Gruppenart {
 }
 
 // custom deserializer function
-fn deserialize_maybe_nan<'de, D>(deserializer: D) -> Result<Option<f64>, D::Error>
+fn deserialize_maybe_nan<'de, D, T>(deserializer: D) -> Result<Option<T>, D::Error>
 where
     D: Deserializer<'de>,
+    T: FromStr,
 {
     let s: String = Deserialize::deserialize(deserializer)?;
 
     if s == "n/a" {
         Ok(None)
     } else {
-        match f64::from_str(&s) {
+        match T::from_str(&s) {
             Ok(value) => Ok(Some(value)),
             Err(_) => Err(serde::de::Error::custom("Invalid number")),
         }

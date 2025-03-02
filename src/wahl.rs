@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, HashSet};
 
-use anyhow::{Context, Result};
+use anyhow::Result;
 
 use crate::types::{Bund, GruppeNr, Land, ParteiWahlkreis};
 

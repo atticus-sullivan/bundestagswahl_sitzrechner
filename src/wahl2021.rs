@@ -14,41 +14,42 @@ pub fn calc(
     bund: Bund,
     parteinr_name: &BTreeMap<GruppeNr, String>,
 ) -> Result<(BTreeMap<GruppeNr, u64>, u64)> {
+    // [1] -> § 1 Abs.1 Satz 1
     let total_seats = 598;
     let direktmandate = wahl::wahlkreismandate(&bund);
 
     // [1] -> § 6 Abs.1
     // TODO potential reduction of total seats (independant candidates)
 
-    // [1] -> §6 Abs.3
+    // [1] -> § 6 Abs.3
     // Parteien nationaler Minderheiten sind von der 5-Prozent-/3-Direktmandats-Huerde ausgenommen
     let keep = parteinr_name
         .iter()
         .filter_map(|(nr, name)| if name == "SSW" { Some(*nr) } else { None })
         .collect::<HashSet<_>>();
 
-    // [1] -> §6 Abs.3
+    // [1] -> § 6 Abs.3
     // Bei Verteilung der Sitze auf Landeslisten -> nur Parteien >= 3 Direktmandate oder >= 5%
     // Zweitstimmen
     let bund = wahl::huerde(bund, &direktmandate, 3, 0.05, keep)?;
 
-    // [1] -> §6 Abs.2 Satz 1f
+    // [1] -> § 6 Abs.2 Satz 1f
     // Gesamtzahl der Sitze werden auf die Länder anhand der Bevölkerung aufgeteilt
     let sk = sitzkontingent(&bund.laender, total_seats)?;
     debug!("1.Oberverteilung: {:#?}", sk);
 
-    // [1] -> §6 Abs.2 Satz 1f
+    // [1] -> § 6 Abs.2 Satz 1f
     // Dem Land zugewiesene Sitze werden auf die Parteien anhand der Zweitstimmen in diesem Land
     // aufgeteilt
     let uv = unterverteilung(&bund.laender, &sk)?;
     debug!("1.Unterverteilung: {:#?}", uv);
 
-    // [1] -> §6 Abs.5 Satz 2
+    // [1] -> § 6 Abs.5 Satz 2
     // max aus direktmandaten und mittelwert aus direktmandaten und (1.)Unterverteilung => sum
     let msz = mindestsitzzahl(&bund.laender, &bund.parteien, &uv, &direktmandate)?;
     debug!("Mindestsitzzahlen: {:#?}", msz);
 
-    // [1] -> §6 Abs.5+6
+    // [1] -> § 6 Abs.5+6
     // Gesamtzahl der Sitze wird so lange erhöht, bis jede Partei (bei der Verteilung nach den
     // bundesweiten Zweitstimmen) mindestens so viele Sitze bekommt wie ihr nach Mindestsitzzahl
     // zusteht. Jedoch können dabei bis zu 3 Ueberhangsmandate unausgeglichen bleiben.
@@ -97,7 +98,7 @@ fn unterverteilung(
         let dist: BTreeMap<i16, u64> = sls(
             l.parteien
                 .iter()
-                .map(|(i, j)| -> Result<(i16, f64)> {
+                .map(|(i, j)| -> Result<(GruppeNr, f64)> {
                     Ok((
                         *i,
                         j.zweitstimmen.with_context(|| {

@@ -25,6 +25,7 @@ impl Gebiet {
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct ParteiWahlkreis {
     pub erststimmen: Option<u64>,
     pub zweitstimmen: Option<u64>,
@@ -42,13 +43,14 @@ impl From<&Gruppenergebnis> for ParteiWahlkreis {
             .find(|i| i.stimmart == Stimmart::LISTE)
             .map(|x| x.anzahl);
         Self {
-            erststimmen: erststimmen.or(Some(0)),
-            zweitstimmen: zweitstimmen.or(Some(0)),
+            erststimmen: erststimmen.unwrap_or(Some(0)),
+            zweitstimmen: zweitstimmen.unwrap_or(Some(0)),
         }
     }
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct ParteiLand {
     pub erststimmen: Option<u64>,
     pub zweitstimmen: Option<u64>,
@@ -66,13 +68,14 @@ impl From<&Gruppenergebnis> for ParteiLand {
             .find(|i| i.stimmart == Stimmart::LISTE)
             .map(|x| x.anzahl);
         Self {
-            erststimmen: erststimmen.or(Some(0)),
-            zweitstimmen: zweitstimmen.or(Some(0)),
+            erststimmen: erststimmen.unwrap_or(Some(0)),
+            zweitstimmen: zweitstimmen.unwrap_or(Some(0)),
         }
     }
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct ParteiBund {
     pub erststimmen: Option<u64>,
     pub zweitstimmen: Option<u64>,
@@ -90,8 +93,8 @@ impl From<&Gruppenergebnis> for ParteiBund {
             .find(|i| i.stimmart == Stimmart::LISTE)
             .map(|x| x.anzahl);
         Self {
-            erststimmen: erststimmen.or(Some(0)),
-            zweitstimmen: zweitstimmen.or(Some(0)),
+            erststimmen: erststimmen.unwrap_or(Some(0)),
+            zweitstimmen: zweitstimmen.unwrap_or(Some(0)),
         }
     }
 }
@@ -185,6 +188,7 @@ impl Land {
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct Wahlkreis {
     pub name: String,
     pub parteien: BTreeMap<GruppeNr, ParteiWahlkreis>,
