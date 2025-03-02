@@ -1,6 +1,6 @@
 use anyhow::{bail, Context, Result};
-use std::collections::{BTreeMap, HashSet};
 use log::debug;
+use std::collections::{BTreeMap, HashSet};
 
 use crate::types::{Bund, GruppeNr, Land, ParteiBund};
 
@@ -10,7 +10,10 @@ use crate::wahl;
 // used (legal) references:
 // [1]: docs/2021_bundeswahlgesetz.pdf
 
-pub fn calc(bund: Bund, parteinr_name: &BTreeMap<GruppeNr, String>) -> Result<(BTreeMap<GruppeNr, u64>, u64)> {
+pub fn calc(
+    bund: Bund,
+    parteinr_name: &BTreeMap<GruppeNr, String>,
+) -> Result<(BTreeMap<GruppeNr, u64>, u64)> {
     let total_seats = 598;
     let direktmandate = wahl::wahlkreismandate(&bund);
 
@@ -19,13 +22,10 @@ pub fn calc(bund: Bund, parteinr_name: &BTreeMap<GruppeNr, String>) -> Result<(B
 
     // [1] -> §6 Abs.3
     // Parteien nationaler Minderheiten sind von der 5-Prozent-/3-Direktmandats-Huerde ausgenommen
-    let keep = parteinr_name.iter().filter_map(|(nr,name)| {
-        if name == "SSW" {
-            Some(*nr)
-        } else {
-            None
-        }
-    }).collect::<HashSet<_>>();
+    let keep = parteinr_name
+        .iter()
+        .filter_map(|(nr, name)| if name == "SSW" { Some(*nr) } else { None })
+        .collect::<HashSet<_>>();
 
     // [1] -> §6 Abs.3
     // Bei Verteilung der Sitze auf Landeslisten -> nur Parteien >= 3 Direktmandate oder >= 5%
@@ -189,14 +189,19 @@ fn oberverteilung(
             .iter()
             .map(|(i, a)| (*i, (*a as i64 - dist[i] as i64).max(0) as u64))
             .collect::<BTreeMap<_, _>>();
-        let unausgeglichener_ueberhang_cnt = unausgeglichener_ueberhang.iter().map(|(_, u)| u).sum::<u64>();
+        let unausgeglichener_ueberhang_cnt = unausgeglichener_ueberhang
+            .iter()
+            .map(|(_, u)| u)
+            .sum::<u64>();
 
         // [1] -> § 6 Abs.5 Satz 4
         // "Bei der Erhöhung bleiben in den Wahlkreisen errungene Sitze [...] bis zu einer Zahl von
         // drei unberücksichtigt"
         if unausgeglichener_ueberhang_cnt <= 3 {
             return Ok((
-                dist.iter().map(|(i, s)| (*i, s + unausgeglichener_ueberhang[i])).collect(),
+                dist.iter()
+                    .map(|(i, s)| (*i, s + unausgeglichener_ueberhang[i]))
+                    .collect(),
                 // [1] -> § 6 Abs.5 Satz 5
                 // "die Gesamtzahl der Sitze [...] erhöht sich um die Unterschiedszahl"
                 total_seats + unausgeglichener_ueberhang_cnt,

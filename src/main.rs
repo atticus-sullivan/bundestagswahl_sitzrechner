@@ -8,8 +8,8 @@ mod wahl2021;
 
 use std::collections::BTreeMap;
 
-use log::debug;
 use env_logger::Logger;
+use log::debug;
 
 use anyhow::Result;
 
