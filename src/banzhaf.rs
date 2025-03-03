@@ -6,7 +6,7 @@ use crate::types::GruppeNr;
 
 pub fn banzhaf(verteilung: &BTreeMap<GruppeNr, u64>) -> Result<BTreeMap<GruppeNr, f64>> {
     // how many votes need to win a vote
-    let quorum = (verteilung.values().sum::<u64>() as f64 / 2 as f64).ceil() as u64;
+    let quorum = (verteilung.values().sum::<u64>() as f64 / 2_f64).ceil() as u64;
 
     // all kinds of koalitionen
     let potenzmenge = generate_power_set(&verteilung.keys().cloned().collect::<Vec<GruppeNr>>());
@@ -52,10 +52,10 @@ where
     for i in 0..(1 << n) {
         let mut subset = Vec::new();
 
-        for j in 0..n {
+        for (j, k) in elements.iter().enumerate().take(n) {
             // Check if the j-th element should be included in the subset
             if i & (1 << j) != 0 {
-                subset.push(elements[j].clone());
+                subset.push(k.clone());
             }
         }
 
