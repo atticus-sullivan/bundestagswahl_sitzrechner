@@ -178,50 +178,125 @@ fn elections(inputs: &[(&str, PathBuf, PathBuf)]) -> Result<()> {
         let mut col_offset: usize = 0;
         header.push("Partei");
 
-        header.push("S");
+        header.push("Stimmen");
         let total_votes = bund
             .parteien
             .values()
             .filter_map(|x| x.zweitstimmen)
             .sum::<u64>();
+        let mut shown_votes_p: f64 = 0.0;
         for (i, p) in bund.parteien.iter() {
+            let z = p
+                .zweitstimmen
+                .with_context(|| format!("no zweitstimmen for partei {i}"))?;
+            let percentage = (z as f64 / total_votes as f64) * 100.0;
+            if percentage < 0.5 {
+                continue;
+            }
+
             let x = tab_content.entry(parteinr_name[i].clone()).or_default();
+            shown_votes_p += percentage;
+            x.push(format!("{:.2}", percentage));
+        }
+        totals.push(format!("{:.2}", shown_votes_p));
+        totals.extend([""].into_iter().map(|x| x.to_owned()));
+        col_offset += 1;
+
+        header.push("");
+        header.push("2021");
+        header.push("% > H");
+        header.push("% Sitz");
+        header.push("Banzhaf");
+
+        let (sitze, total, bund_h) = wahl2021::calc(bund.clone(), &parteinr_name)?;
+        let banzhaf = banzhaf::banzhaf(&sitze)?;
+
+        let total_votes = bund_h
+            .parteien
+            .values()
+            .filter_map(|x| x.zweitstimmen)
+            .sum::<u64>();
+
+        for (p, s) in sitze.iter() {
+            let x = tab_content
+                .entry(parteinr_name[p].clone())
+                .or_insert(vec!["".to_owned(); col_offset]);
+
+            if x.len() <= col_offset {
+                x.extend(
+                    vec![""; 1 + col_offset - x.len()]
+                        .into_iter()
+                        .map(|x| x.to_owned()),
+                );
+            }
+
+            x.push(format!("{}", s));
             x.push(format!(
                 "{:.2}",
-                (p.zweitstimmen
-                    .with_context(|| format!("no zweitstimmen for partei {i}"))?
+                (bund_h.parteien[p]
+                    .zweitstimmen
+                    .with_context(|| format!("no zweitstimmen for partei {p}"))?
                     as f64
                     / total_votes as f64)
                     * 100.0
             ));
-        }
-
-        header.push("2021");
-        header.push("P");
-        // header.push("B");
-        let (sitze, total) = wahl2021::calc(bund.clone(), &parteinr_name)?;
-        for (p, s) in sitze.iter() {
-            let x = tab_content
-                .entry(parteinr_name[p].clone())
-                .or_insert(vec!["".to_owned(); col_offset]);
-            x.push(format!("{}", s));
             x.push(format!("{:.2}", (*s as f64 / total as f64) * 100.0));
+            x.push(format!("{:.3}", banzhaf.get(p).unwrap_or(&0.0)))
         }
         totals.push(format!("{}", total));
+        totals.extend(["", "", ""].into_iter().map(|x| x.to_owned()));
+        col_offset += 4;
+
+        totals.extend([""].into_iter().map(|x| x.to_owned()));
         col_offset += 1;
 
+        header.push("");
         header.push("2025");
-        header.push("P");
-        // header.push("B");
-        let (sitze, total) = wahl2025::calc(bund.clone(), &parteinr_name)?;
+        header.push("% > H");
+        header.push("% Sitz");
+        header.push("Banzhaf");
+
+        let (sitze, total, bund_h) = wahl2025::calc(bund.clone(), &parteinr_name)?;
+        let banzhaf = banzhaf::banzhaf(&sitze)?;
+
+        let total_votes = bund_h
+            .parteien
+            .values()
+            .filter_map(|x| x.zweitstimmen)
+            .sum::<u64>();
+
         for (p, s) in sitze.iter() {
             let x = tab_content
                 .entry(parteinr_name[p].clone())
                 .or_insert(vec!["".to_owned(); col_offset]);
+
+            if x.len() <= col_offset {
+                x.extend(
+                    vec![""; 1 + col_offset - x.len()]
+                        .into_iter()
+                        .map(|x| x.to_owned()),
+                );
+            }
+
             x.push(format!("{}", s));
+            x.push(format!(
+                "{:.2}",
+                (bund_h.parteien[p]
+                    .zweitstimmen
+                    .with_context(|| format!("no zweitstimmen for partei {p}"))?
+                    as f64
+                    / total_votes as f64)
+                    * 100.0
+            ));
             x.push(format!("{:.2}", (*s as f64 / total as f64) * 100.0));
+            x.push(format!("{:.3}", banzhaf.get(p).unwrap_or(&0.0)))
         }
         totals.push(format!("{}", total));
+        totals.extend(["", "", ""].into_iter().map(|x| x.to_owned()));
+        // col_offset += 4;
+
+        // totals.extend([""].into_iter().map(|x| x.to_owned()));
+        // col_offset += 1;
 
         // assemble the table
         let mut tab = Table::new();

@@ -17,7 +17,7 @@ use crate::wahl;
 pub fn calc(
     bund: Bund,
     parteinr_name: &BTreeMap<GruppeNr, String>,
-) -> Result<(BTreeMap<GruppeNr, u64>, u64)> {
+) -> Result<(BTreeMap<GruppeNr, u64>, u64, Bund)> {
     // [1] -> § 1 Abs.1 Satz 1
     let total_seats = 630;
     let wahlkreismandate = wahl::wahlkreismandate(&bund);
@@ -53,7 +53,7 @@ pub fn calc(
     // [1] -> § 4 Abs.4
     // TODO potential +x seats due to >50% votes but not >50% seats
 
-    Ok((ov, total_seats))
+    Ok((ov, total_seats, bund))
 }
 
 /// Berechnet die *Oberverteilung* für die `parteien_bund` auf Basis der `base_seats` Sitze und der
