@@ -19,7 +19,7 @@ use comfy_table::presets::UTF8_FULL_CONDENSED;
 use comfy_table::{Cell, Color, Table};
 use log::debug;
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 
 const COLOR_ALT_BG: Color = Color::Rgb {
     r: 105,
@@ -177,24 +177,48 @@ fn elections(inputs: &[(&str, PathBuf, PathBuf)]) -> Result<()> {
         let mut col_offset: usize = 0;
         header.push("Partei");
 
+        header.push("S");
+        let total_votes = bund
+            .parteien
+            .values()
+            .filter_map(|x| x.zweitstimmen)
+            .sum::<u64>();
+        for (i, p) in bund.parteien.iter() {
+            let x = tab_content.entry(parteinr_name[i].clone()).or_default();
+            x.push(format!(
+                "{:.2}",
+                (p.zweitstimmen
+                    .with_context(|| format!("no zweitstimmen for partei {i}"))?
+                    as f64
+                    / total_votes as f64)
+                    * 100.0
+            ));
+        }
+
         header.push("2021");
+        header.push("P");
+        // header.push("B");
         let (sitze, total) = wahl2021::calc(bund.clone(), &parteinr_name)?;
         for (p, s) in sitze.iter() {
-            tab_content
+            let x = tab_content
                 .entry(parteinr_name[p].clone())
-                .or_insert(vec!["".to_owned(); col_offset])
-                .push(format!("{}", s));
+                .or_insert(vec!["".to_owned(); col_offset]);
+            x.push(format!("{}", s));
+            x.push(format!("{:.2}", (*s as f64 / total as f64) * 100.0));
         }
         totals.push(format!("{}", total));
         col_offset += 1;
 
         header.push("2025");
+        header.push("P");
+        // header.push("B");
         let (sitze, total) = wahl2025::calc(bund.clone(), &parteinr_name)?;
         for (p, s) in sitze.iter() {
-            tab_content
+            let x = tab_content
                 .entry(parteinr_name[p].clone())
-                .or_insert(vec!["".to_owned(); col_offset])
-                .push(format!("{}", s));
+                .or_insert(vec!["".to_owned(); col_offset]);
+            x.push(format!("{}", s));
+            x.push(format!("{:.2}", (*s as f64 / total as f64) * 100.0));
         }
         totals.push(format!("{}", total));
 
