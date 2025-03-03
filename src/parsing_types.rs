@@ -84,33 +84,33 @@ pub struct Stimmergebnis {
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub enum Stimmart {
-    #[serde(rename="DIREKT")]
+    #[serde(rename = "DIREKT")]
     Direkt,
-    #[serde(rename="LISTE")]
+    #[serde(rename = "LISTE")]
     Liste,
-    #[serde(rename="KEINE")]
+    #[serde(rename = "KEINE")]
     Keine,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub enum Gebietsart {
-    #[serde(rename="BUND")]
+    #[serde(rename = "BUND")]
     Bund,
-    #[serde(rename="LAND")]
+    #[serde(rename = "LAND")]
     Land,
-    #[serde(rename="WAHLKREIS")]
+    #[serde(rename = "WAHLKREIS")]
     Wahlkreis,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub enum Gruppenart {
-    #[serde(rename="PARTEI")]
+    #[serde(rename = "PARTEI")]
     Partei,
-    #[serde(rename="ALLGEMEIN")]
+    #[serde(rename = "ALLGEMEIN")]
     Allgemein, // waehlende / wahlberechtigte / gueltig / ungueltig
-    #[serde(rename="UEBRIGE")]
+    #[serde(rename = "UEBRIGE")]
     Uebrige,
-    #[serde(rename="EINZELKANDIDAT")]
+    #[serde(rename = "EINZELKANDIDAT")]
     Einzelkandidat,
 }
 
