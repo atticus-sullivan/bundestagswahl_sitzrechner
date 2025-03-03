@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+mod banzhaf;
 mod parsing;
 mod parsing_types;
 mod sls;
