@@ -142,6 +142,37 @@ impl Bund {
             .collect::<Result<Vec<_>>>()?;
         Ok(Self { laender, parteien })
     }
+
+    pub fn merge_parteien(self: &mut Self, parteien: &[GruppeNr]) {
+        if parteien.len() < 2 {
+            return
+        }
+
+        let accumulated = parteien.iter().fold(
+            (None, ParteiBund{erststimmen: Some(0), zweitstimmen: Some(0)}),
+            |mut acc, p| {
+                if let Some(partei) = self.parteien.get(p) {
+                    acc.1.erststimmen = acc.1.erststimmen.map(|x| x + partei.erststimmen.unwrap_or(0));
+                    acc.1.zweitstimmen = acc.1.zweitstimmen.map(|x| x + partei.zweitstimmen.unwrap_or(0));
+                    acc.0.get_or_insert(*p);
+                }
+                acc
+            },
+        );
+
+        // Remove the merged parties from the map and insert the accumulated result
+        for p in parteien {
+            self.parteien.remove(p);
+        }
+        if let Some(k) = accumulated.0 {
+            self.parteien.insert(k, accumulated.1);
+        }
+
+        for l in self.laender.iter_mut() {
+            l.merge_parteien(parteien);
+        }
+    }
+
 }
 
 #[derive(Debug, Clone)]
@@ -189,6 +220,36 @@ impl Land {
             name,
         })
     }
+
+    pub fn merge_parteien(self: &mut Self, parteien: &[GruppeNr]) {
+        if parteien.len() < 2 {
+            return
+        }
+
+        let accumulated = parteien.iter().fold(
+            (None, ParteiLand{erststimmen: Some(0), zweitstimmen: Some(0)}),
+            |mut acc, p| {
+                if let Some(partei) = self.parteien.get(p) {
+                    acc.1.erststimmen = acc.1.erststimmen.map(|x| x + partei.erststimmen.unwrap_or(0));
+                    acc.1.zweitstimmen = acc.1.zweitstimmen.map(|x| x + partei.zweitstimmen.unwrap_or(0));
+                    acc.0.get_or_insert(*p);
+                }
+                acc
+            },
+        );
+
+        // Remove the merged parties from the map and insert the accumulated result
+        for p in parteien {
+            self.parteien.remove(p);
+        }
+        if let Some(k) = accumulated.0 {
+            self.parteien.insert(k, accumulated.1);
+        }
+
+        for wk in self.wahlkreise.iter_mut() {
+            wk.merge_parteien(parteien);
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -205,6 +266,32 @@ impl Wahlkreis {
         parteien: BTreeMap<GruppeNr, ParteiWahlkreis>,
     ) -> Result<Self> {
         Ok(Self { parteien, name })
+    }
+
+    pub fn merge_parteien(self: &mut Self, parteien: &[GruppeNr]) {
+        if parteien.len() < 2 {
+            return
+        }
+
+        let accumulated = parteien.iter().fold(
+            (None, ParteiWahlkreis{erststimmen: Some(0), zweitstimmen: Some(0)}),
+            |mut acc, p| {
+                if let Some(partei) = self.parteien.get(p) {
+                    acc.1.erststimmen = acc.1.erststimmen.map(|x| x + partei.erststimmen.unwrap_or(0));
+                    acc.1.zweitstimmen = acc.1.zweitstimmen.map(|x| x + partei.zweitstimmen.unwrap_or(0));
+                    acc.0.get_or_insert(*p);
+                }
+                acc
+            },
+        );
+
+        // Remove the merged parties from the map and insert the accumulated result
+        for p in parteien {
+            self.parteien.remove(p);
+        }
+        if let Some(k) = accumulated.0 {
+            self.parteien.insert(k, accumulated.1);
+        }
     }
 }
 
