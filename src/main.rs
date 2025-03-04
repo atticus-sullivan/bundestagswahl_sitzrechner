@@ -249,7 +249,7 @@ fn elections(
 struct Cli {
     #[arg(short = 'd', long = "data", default_value = "./data/")]
     data_stem: PathBuf,
-    years: Vec<u64>,
+    years: Vec<String>,
     #[arg(short = 's', long = "scheme")]
     schemes: Vec<Scheme>,
     #[arg(long = "op", default_value = "none")]
@@ -322,8 +322,8 @@ fn main() -> Result<()> {
             .map(|y| {
                 (
                     y.to_string(),
-                    args.data_stem.join(format!("{y}-gesamtergebnis.xml")),
-                    args.data_stem.join(format!("{y}-strukturdaten.csv")),
+                    args.data_stem.join(format!("{y}_gesamtergebnis.xml")),
+                    args.data_stem.join(format!("{y}_strukturdaten.csv")),
                 )
             })
             .collect::<Vec<_>>(),
