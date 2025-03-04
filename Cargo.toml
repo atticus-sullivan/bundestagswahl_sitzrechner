@@ -17,3 +17,4 @@ quick-xml = { version = "0.37.2", features = ["serialize"] }
 log = "0.4.26"
 env_logger = "0.11.6"
 comfy-table = "7.0"
+clap = { version = "4.4", features = ["derive"] }

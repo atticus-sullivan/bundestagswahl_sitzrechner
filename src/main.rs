@@ -18,9 +18,12 @@ use std::path::PathBuf;
 use comfy_table::modifiers::UTF8_ROUND_CORNERS;
 use comfy_table::presets::UTF8_FULL_CONDENSED;
 use comfy_table::{Cell, Color, Table};
+
 use log::debug;
 
+use clap::Parser;
 use anyhow::{Context, Result};
+
 use types::{Bund, GruppeNr};
 
 const COLOR_ALT_BG: Color = Color::Rgb {
@@ -37,6 +40,7 @@ pub trait ElectionCalc {
     ) -> Result<(BTreeMap<GruppeNr, u64>, u64, Bund)>;
 }
 
+#[derive(Clone, Debug)]
 struct ElectionCalc2021 {}
 impl ElectionCalc for ElectionCalc2021 {
     fn calc(
@@ -47,6 +51,7 @@ impl ElectionCalc for ElectionCalc2021 {
         wahl2021::calc(bund, parteinr_name)
     }
 }
+#[derive(Clone, Debug)]
 struct ElectionCalc2025 {}
 impl ElectionCalc for ElectionCalc2025 {
     fn calc(
@@ -59,13 +64,13 @@ impl ElectionCalc for ElectionCalc2025 {
 }
 
 fn elections(
-    inputs: &[(&str, PathBuf, PathBuf)],
-    calcs: Vec<(&str, Box<dyn ElectionCalc>)>,
+    inputs: &[(String, PathBuf, PathBuf)],
+    calcs: &Vec<(String, Box<dyn ElectionCalc>)>,
 ) -> Result<()> {
     for (name, stimmen, struktur) in inputs.iter() {
         println!("{name}");
-        let stimmen = parsing::parse_xml(stimmen)?;
-        let struktur = parsing::parse_csv(struktur)?;
+        let stimmen = parsing::parse_xml(stimmen).with_context(|| format!("error reading {:?}", stimmen))?;
+        let struktur = parsing::parse_csv(struktur).with_context(|| format!("error reading {:?}", struktur))?;
 
         let (bund, parteinr_name) = types::convert_data(stimmen, &struktur)?;
 
@@ -227,25 +232,52 @@ fn elections(
     Ok(())
 }
 
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Cli {
+    #[arg(short='d', long="data")]
+    data_stem: PathBuf,
+    years: Vec<u64>,
+    #[arg(short='s', long="scheme")]
+    schemes: Vec<Scheme>
+}
+
+#[derive(clap::ValueEnum, Clone, Debug)]
+enum Scheme {
+    Scheme2021,
+    Scheme2025,
+}
+impl Scheme {
+    fn to_election_calc(self: &Self) -> Box<dyn ElectionCalc> {
+        match self {
+            Scheme::Scheme2021 => Box::new(ElectionCalc2021{}),
+            Scheme::Scheme2025 => Box::new(ElectionCalc2025{}),
+        }
+    }
+    fn title(self: &Self) -> String {
+        match self {
+            Scheme::Scheme2021 => "2021",
+            Scheme::Scheme2025 => "2025",
+        }.to_owned()
+    }
+}
+
+// eum {}
+
 fn main() -> Result<()> {
     // let logger = Logger::from_default_env();
     env_logger::init();
 
-    elections(&[
-        (
-            "2021",
-            PathBuf::from("/media/daten/coding/bundestagswahl_sitzrechner/data/2021-gesamtergebnis_01.xml"),
-            PathBuf::from("/media/daten/coding/bundestagswahl_sitzrechner/data/2021-btw21_strukturdaten_corr.csv"),
-        ),
-        (
-            "2025",
-            PathBuf::from("/media/daten/coding/bundestagswahl_sitzrechner/data/2025_gesamtergebnis_01.xml"),
-            PathBuf::from("/media/daten/coding/bundestagswahl_sitzrechner/data/2025-btw2025_strukturdaten.csv"),
-        ),
-    ], vec![
-        ("2021", Box::new(ElectionCalc2021{})),
-        ("2025", Box::new(ElectionCalc2025{})),
-    ])?;
+    let args = Cli::parse();
+
+    elections(
+        &args.years.iter().map(|y| (
+            y.to_string(),
+            args.data_stem.join(format!("{y}-gesamtergebnis.xml")),
+            args.data_stem.join(format!("{y}-strukturdaten.csv")),
+        )).collect::<Vec<_>>(),
+        &args.schemes.iter().map(|s| (s.title(), s.to_election_calc())).collect::<Vec<_>>(),
+    )?;
 
     Ok(())
 }
