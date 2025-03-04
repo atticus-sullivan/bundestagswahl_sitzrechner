@@ -21,8 +21,8 @@ use comfy_table::{Cell, Color, Table};
 
 use log::debug;
 
-use clap::Parser;
 use anyhow::{Context, Result};
+use clap::Parser;
 
 use types::{Bund, GruppeNr};
 
@@ -66,7 +66,7 @@ impl ElectionCalc for ElectionCalc2025 {
 fn elections(
     inputs: &[(String, PathBuf, PathBuf)],
     calcs: &Vec<(String, Box<dyn ElectionCalc>)>,
-    calc_ops: &Vec<CalcOp>,
+    calc_ops: &[CalcOp],
 ) -> Result<()> {
     for (name, stimmen, struktur) in inputs.iter() {
         println!("{name}");
@@ -75,8 +75,10 @@ fn elections(
                 println!("    {}", calc_op.name());
             }
 
-            let stimmen = parsing::parse_xml(stimmen).with_context(|| format!("error reading {:?}", stimmen))?;
-            let struktur = parsing::parse_csv(struktur).with_context(|| format!("error reading {:?}", struktur))?;
+            let stimmen = parsing::parse_xml(stimmen)
+                .with_context(|| format!("error reading {:?}", stimmen))?;
+            let struktur = parsing::parse_csv(struktur)
+                .with_context(|| format!("error reading {:?}", struktur))?;
 
             let (mut bund, parteinr_name) = types::convert_data(stimmen, &struktur)?;
 
@@ -177,9 +179,10 @@ fn elections(
                 //
                 for (p, seats) in sitze.iter() {
                     // obtain the row should be appended to (potentially create it)
-                    let x = tab_content
-                        .entry(parteinr_name[p].clone())
-                        .or_insert(vec!["".to_owned(); col_offset]);
+                    let x =
+                        tab_content
+                            .entry(parteinr_name[p].clone())
+                            .or_insert(vec!["".to_owned(); col_offset]);
 
                     // fill up with empty cells to ensure the content is aligned properly
                     if x.len() <= col_offset {
@@ -197,9 +200,9 @@ fn elections(
                         (bund_h.parteien[p]
                             .zweitstimmen
                             .with_context(|| format!("no zweitstimmen for partei {p}"))?
-                        as f64
-                        / total_votes as f64)
-                        * 100.0
+                            as f64
+                            / total_votes as f64)
+                            * 100.0
                     ));
                     // percentage of seats
                     x.push(format!("{:.2}", (*seats as f64 / total as f64) * 100.0));
@@ -244,12 +247,12 @@ fn elections(
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Cli {
-    #[arg(short='d', long="data", default_value="./data/")]
+    #[arg(short = 'd', long = "data", default_value = "./data/")]
     data_stem: PathBuf,
     years: Vec<u64>,
-    #[arg(short='s', long="scheme")]
+    #[arg(short = 's', long = "scheme")]
     schemes: Vec<Scheme>,
-    #[arg(long="op", default_value="none")]
+    #[arg(long = "op", default_value = "none")]
     calc_ops: Vec<CalcOp>,
 }
 
@@ -259,17 +262,18 @@ enum Scheme {
     Scheme2025,
 }
 impl Scheme {
-    fn to_election_calc(self: &Self) -> Box<dyn ElectionCalc> {
+    fn to_election_calc(&self) -> Box<dyn ElectionCalc> {
         match self {
-            Scheme::Scheme2021 => Box::new(ElectionCalc2021{}),
-            Scheme::Scheme2025 => Box::new(ElectionCalc2025{}),
+            Scheme::Scheme2021 => Box::new(ElectionCalc2021 {}),
+            Scheme::Scheme2025 => Box::new(ElectionCalc2025 {}),
         }
     }
-    fn title(self: &Self) -> String {
+    fn title(&self) -> String {
         match self {
             Scheme::Scheme2021 => "2021",
             Scheme::Scheme2025 => "2025",
-        }.to_owned()
+        }
+        .to_owned()
     }
 }
 
@@ -279,29 +283,31 @@ enum CalcOp {
     MergeCduCsu,
 }
 impl CalcOp {
-    fn exec(self: &Self, bund: &mut Bund, parteinr_name: &BTreeMap<GruppeNr, String>) {
+    fn exec(&self, bund: &mut Bund, parteinr_name: &BTreeMap<GruppeNr, String>) {
         match self {
-            CalcOp::MergeCduCsu => {
-                bund.merge_parteien(&["CDU", "CSU"].into_iter().map(|ps| parteinr_name.iter().find_map(|(i, p)| {
-                    if ps == p {
-                        Some(*i)
-                    } else {
-                        None
-                    }
-                }).unwrap()).collect::<Vec<_>>())
-            },
-            CalcOp::None => {},
+            CalcOp::MergeCduCsu => bund.merge_parteien(
+                &["CDU", "CSU"]
+                    .into_iter()
+                    .map(|ps| {
+                        parteinr_name
+                            .iter()
+                            .find_map(|(i, p)| if ps == p { Some(*i) } else { None })
+                            .unwrap()
+                    })
+                    .collect::<Vec<_>>(),
+            ),
+            CalcOp::None => {}
         }
     }
 
-    fn name(self: &Self) -> String {
+    fn name(&self) -> String {
         match self {
             CalcOp::None => "none",
             CalcOp::MergeCduCsu => "merged cdu/csu",
-        }.to_owned()
+        }
+        .to_owned()
     }
 }
-
 
 fn main() -> Result<()> {
     // let logger = Logger::from_default_env();
@@ -310,12 +316,22 @@ fn main() -> Result<()> {
     let args = Cli::parse();
 
     elections(
-        &args.years.iter().map(|y| (
-            y.to_string(),
-            args.data_stem.join(format!("{y}-gesamtergebnis.xml")),
-            args.data_stem.join(format!("{y}-strukturdaten.csv")),
-        )).collect::<Vec<_>>(),
-        &args.schemes.iter().map(|s| (s.title(), s.to_election_calc())).collect::<Vec<_>>(),
+        &args
+            .years
+            .iter()
+            .map(|y| {
+                (
+                    y.to_string(),
+                    args.data_stem.join(format!("{y}-gesamtergebnis.xml")),
+                    args.data_stem.join(format!("{y}-strukturdaten.csv")),
+                )
+            })
+            .collect::<Vec<_>>(),
+        &args
+            .schemes
+            .iter()
+            .map(|s| (s.title(), s.to_election_calc()))
+            .collect::<Vec<_>>(),
         &args.calc_ops,
     )?;
 

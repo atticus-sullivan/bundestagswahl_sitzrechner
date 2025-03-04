@@ -143,17 +143,29 @@ impl Bund {
         Ok(Self { laender, parteien })
     }
 
-    pub fn merge_parteien(self: &mut Self, parteien: &[GruppeNr]) {
+    pub fn merge_parteien(&mut self, parteien: &[GruppeNr]) {
         if parteien.len() < 2 {
-            return
+            return;
         }
 
         let accumulated = parteien.iter().fold(
-            (None, ParteiBund{erststimmen: Some(0), zweitstimmen: Some(0)}),
+            (
+                None,
+                ParteiBund {
+                    erststimmen: Some(0),
+                    zweitstimmen: Some(0),
+                },
+            ),
             |mut acc, p| {
                 if let Some(partei) = self.parteien.get(p) {
-                    acc.1.erststimmen = acc.1.erststimmen.map(|x| x + partei.erststimmen.unwrap_or(0));
-                    acc.1.zweitstimmen = acc.1.zweitstimmen.map(|x| x + partei.zweitstimmen.unwrap_or(0));
+                    acc.1.erststimmen = acc
+                        .1
+                        .erststimmen
+                        .map(|x| x + partei.erststimmen.unwrap_or(0));
+                    acc.1.zweitstimmen = acc
+                        .1
+                        .zweitstimmen
+                        .map(|x| x + partei.zweitstimmen.unwrap_or(0));
                     acc.0.get_or_insert(*p);
                 }
                 acc
@@ -172,7 +184,6 @@ impl Bund {
             l.merge_parteien(parteien);
         }
     }
-
 }
 
 #[derive(Debug, Clone)]
@@ -221,17 +232,29 @@ impl Land {
         })
     }
 
-    pub fn merge_parteien(self: &mut Self, parteien: &[GruppeNr]) {
+    pub fn merge_parteien(&mut self, parteien: &[GruppeNr]) {
         if parteien.len() < 2 {
-            return
+            return;
         }
 
         let accumulated = parteien.iter().fold(
-            (None, ParteiLand{erststimmen: Some(0), zweitstimmen: Some(0)}),
+            (
+                None,
+                ParteiLand {
+                    erststimmen: Some(0),
+                    zweitstimmen: Some(0),
+                },
+            ),
             |mut acc, p| {
                 if let Some(partei) = self.parteien.get(p) {
-                    acc.1.erststimmen = acc.1.erststimmen.map(|x| x + partei.erststimmen.unwrap_or(0));
-                    acc.1.zweitstimmen = acc.1.zweitstimmen.map(|x| x + partei.zweitstimmen.unwrap_or(0));
+                    acc.1.erststimmen = acc
+                        .1
+                        .erststimmen
+                        .map(|x| x + partei.erststimmen.unwrap_or(0));
+                    acc.1.zweitstimmen = acc
+                        .1
+                        .zweitstimmen
+                        .map(|x| x + partei.zweitstimmen.unwrap_or(0));
                     acc.0.get_or_insert(*p);
                 }
                 acc
@@ -268,17 +291,29 @@ impl Wahlkreis {
         Ok(Self { parteien, name })
     }
 
-    pub fn merge_parteien(self: &mut Self, parteien: &[GruppeNr]) {
+    pub fn merge_parteien(&mut self, parteien: &[GruppeNr]) {
         if parteien.len() < 2 {
-            return
+            return;
         }
 
         let accumulated = parteien.iter().fold(
-            (None, ParteiWahlkreis{erststimmen: Some(0), zweitstimmen: Some(0)}),
+            (
+                None,
+                ParteiWahlkreis {
+                    erststimmen: Some(0),
+                    zweitstimmen: Some(0),
+                },
+            ),
             |mut acc, p| {
                 if let Some(partei) = self.parteien.get(p) {
-                    acc.1.erststimmen = acc.1.erststimmen.map(|x| x + partei.erststimmen.unwrap_or(0));
-                    acc.1.zweitstimmen = acc.1.zweitstimmen.map(|x| x + partei.zweitstimmen.unwrap_or(0));
+                    acc.1.erststimmen = acc
+                        .1
+                        .erststimmen
+                        .map(|x| x + partei.erststimmen.unwrap_or(0));
+                    acc.1.zweitstimmen = acc
+                        .1
+                        .zweitstimmen
+                        .map(|x| x + partei.zweitstimmen.unwrap_or(0));
                     acc.0.get_or_insert(*p);
                 }
                 acc
