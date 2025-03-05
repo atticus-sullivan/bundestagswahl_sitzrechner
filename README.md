@@ -82,3 +82,9 @@ In this case there will be one table for each year per specified `op`.
 You don't need to write code and open pull requests in order to contribute. You
 found a bug? Nice, just drop me a message (preferably via a github issue). You
 have an idea how to extend the tool? Great, same thing just drop me a message.
+
+## References
+> [!NOTE]
+> I keep references to the origin of the external files I include to ease the
+> whole setting things up part in a file with the same filename buf the
+> extension replaced with `.url` (the file is a simple text file though)
