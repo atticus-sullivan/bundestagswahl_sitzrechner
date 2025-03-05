@@ -1,34 +1,76 @@
-no warranty for corretness of the calculation
+> [!WARNING] no warranty for the corretness of the calculation presented here. I
+> tried to include references to the legal text. Note that they refer to the
+> legal text up-to-date at that point in time which is why I also ship the
+> corresponding version of the legal text (pdf provided by Bundeswahlleiter:in).
+> Also I include some additional explanations provided by the
+> Bundeswahlleiter:in.
 
-# Credits/Sources:
-- [wikipedia](https://de.wikipedia.org/wiki/Sitzzuteilungsverfahren_nach_der_Wahl_zum_Deutschen_Bundestag)
-- [altes bwahlg](http://web.archive.org/web/20160509122126/http://www.gesetze-im-internet.de/bwahlg/__6.html)
-- [aktuelles bwahlg](http://www.gesetze-im-internet.de/bwahlg/__6.html)
-- [gesetz für neues bwahlg](https://www.bgbl.de/xaver/bgbl/start.xav?startbk=Bundesanzeiger_BGBl&jumpTo=bgbl120s2395.pdf#__bgbl__%2F%2F*%5B%40attr_id%3D%27bgbl120s2395.pdf%27%5D__1630416216257)
-- [bundeswahlleiter sainteLagueSchepers](https://www.bundeswahlleiter.de/service/glossar/s/sainte-lague-schepers.html)
-- [bundeswahlleiter sitzverteilung](https://www.bundeswahlleiter.de/service/glossar/s/sitzverteilung.html#id-0)
-- [banzhafIndex - Algorithmen verstehen](https://www.youtube.com/watch?v=YHI9O6dVags)
+# Bundestagswahl Sitzrechner
 
-- [csv 2017 Quelle](https://www.govdata.de/web/guest/suchen/-/details/bundestagswahl-2017)
-- [csv 2013 Quelle](https://www.govdata.de/web/guest/suchen/-/details/de-bundestagswahl-2013)
+![Example run of the tool](./demo/main.gif)
 
-# Rework Calculation in 2025 (for older years as well)
-- https://web.archive.org/web/20211223053341/https://www.gesetze-im-internet.de/bwahlg/BJNR003830956.html
-- https://bundeswahlleiterin.de/dam/jcr/2596ba8d-34e4-4c9b-a731-a27f8fb0618f/bundeswahlgesetz.pdf vmtl ist das das aktuelle (für 2025)
-- https://web.archive.org/web/20220707023536/https://www.bundeswahlleiterin.de/dam/jcr/2596ba8d-34e4-4c9b-a731-a27f8fb0618f/bundeswahlgesetz.pdf
+## Motivation
+The motivation behind this tool was to understand how the seats in the german
+parliament (Bundestag) are distributed to the different parties (Parteien) based
+on the election result.
 
-- https://www.bundeswahlleiterin.de/dam/jcr/e9eb08cc-e19e-4caa-b9f7-c69247872344/btw21_erl_sitzzuteilung.pdf (2021)
-- https://bundeswahlleiterin.de/en/dam/jcr/992a9841-b869-49a6-b7b9-0b1366bf2589/btw17_erl_sitzzuteilung.pdf (2017)
-- https://bundeswahlleiterin.de/dam/jcr/d9a0da9b-f5d1-4043-8452-bf72ed9e86b2/20131009_erl_sitzzuteilung.pdf (2013)
+The nice sideeffect of having this procedure in code compared to the legislation
+text is that it is more precise and leaves not really room for misunderstanding.
 
-# Datenquellen
-- https://www.bundeswahlleiterin.de/bundestagswahlen/2021/ergebnisse/opendata.html#d5720c75-b642-497c-bea2-1c196f4a39c4
-- https://www.bundeswahlleiterin.de/bundestagswahlen/2021/ergebnisse/opendata/btw21/20240211_wdhwahl-vgl2017/daten/
-- https://www.bundeswahlleiterin.de/bundestagswahlen/2021/ergebnisse/opendata/btw21/20240211_wdhwahl-vgl2021/daten/
-- https://www.bundeswahlleiterin.de/bundestagswahlen/2021/ergebnisse/opendata/btw21/20240211_wdhwahl-vgl2021/daten/gesamtergebnis_01.xml
+## Missing features / stages
+Due to different reasons some aspects of the distribution procedure are not
+included here.
 
-- https://www.bundeswahlleiterin.de/bundestagswahlen/2025/ergebnisse/opendata.html#681912b6-59d5-4d11-bca3-f460372c4c80
-- https://www.bundeswahlleiterin.de/bundestagswahlen/2025/ergebnisse/opendata/btw25/daten/
+1. Often the scheme starts with defining the total amount of seats (which might
+   be increased later). Mostly you need to subtract the amount of seats won by
+   independant candidates before proceeding to do the normal distribution.
+   For now this step is skipped (it never happend in the data shipped with this
+   tool that this was relevant).
+2. Under certain circumstances some Zweitstimmen are not to be considered. This
+   happens e.g. when the independant candidate was proposed by a party and won
+   the Wahlkreis. Sadly the data from Bundeswahlleiter:in does not provide us
+   with a coupling what Zweitstimme corresponds with which Erststimme, but only
+   with accumulated data. Thus, with this data it is not possible to implement this
+   stage. Also for the elections the data is shipped with this tool this wasn't
+   relevant as far as I can see).
 
-- https://www.bundeswahlleiterin.de/bundestagswahlen/2017/ergebnisse/weitere-ergebnisse.html
-- https://www.bundeswahlleiterin.de/bundestagswahlen/2013/ergebnisse/weitere-ergebnisse.html
+## Usage / Options / Features
+```bash
+Usage: sitzrechner [OPTIONS] [YEARS]...
+
+Arguments:
+  [YEARS]...
+
+Options:
+  -d, --data <DATA_STEM>  [default: ./data/]
+  -s, --scheme <SCHEMES>  [possible values: scheme2021, scheme2025]
+      --op <CALC_OPS>     [default: none] [possible values: none, merge-cdu-csu]
+  -h, --help              Print help
+  -V, --version           Print version
+```
+
+The tool expects files `<DATA_STEM>/<YEAR>_gesamtergebnis.xml` and
+`<DATA_STEM>/<YEAR>_strukturdaten.csv` as input files. By specifying a custom
+`DATA_STEM` you can relocate the input files.
+
+> [!TIP] Bundeswahlleiter:in may provide you with `gesamtergebnis_01.xml` as
+> well as other versions of that file. You may use symlinks to keep the
+> versioning number of the input files while still giving the tool a consistent
+> input path.
+
+For each year you want to calculate (specified by `YEARS`), the tool prints a
+table with the seat distribution for all the distribution `scheme`s you requested.
+
+You may specify multiple `--op`s to preprocess the data feed into the
+distribution scheme. One popular example is merging the parties *CDU* and *CSU*
+to one party and see how this changes the results.
+In this case there will be one table for each year per specified `op`.
+
+> [!NOTE] If you have suggestions for useful perprocessing operations, feel free
+> to reach out to me via a github issue.
+
+## Contributing
+
+You don't need to write code and open pull requests in order to contribute. You
+found a bug? Nice, just drop me a message (preferably via a github issue). You
+have an idea how to extend the tool? Great, same thing just drop me a message.
