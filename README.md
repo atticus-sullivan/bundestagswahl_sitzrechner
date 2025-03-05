@@ -1,4 +1,5 @@
-> [!WARNING] no warranty for the corretness of the calculation presented here. I
+> [!WARNING]
+> no warranty for the corretness of the calculation presented here. I
 > tried to include references to the legal text. Note that they refer to the
 > legal text up-to-date at that point in time which is why I also ship the
 > corresponding version of the legal text (pdf provided by Bundeswahlleiter:in).
@@ -34,6 +35,11 @@ included here.
    stage. Also for the elections the data is shipped with this tool this wasn't
    relevant as far as I can see).
 
+Also note that the distribution scheme usually also includes how the seats a party
+won are distributed among the different states (Bundesländer). But because this was
+not really intersting for my comparisions as well as I don't really know how to
+present all this data, this phase of the schemes is also not considered.
+
 ## Usage / Options / Features
 ```bash
 Usage: sitzrechner [OPTIONS] [YEARS]...
@@ -53,7 +59,8 @@ The tool expects files `<DATA_STEM>/<YEAR>_gesamtergebnis.xml` and
 `<DATA_STEM>/<YEAR>_strukturdaten.csv` as input files. By specifying a custom
 `DATA_STEM` you can relocate the input files.
 
-> [!TIP] Bundeswahlleiter:in may provide you with `gesamtergebnis_01.xml` as
+> [!TIP]
+> Bundeswahlleiter:in may provide you with `gesamtergebnis_01.xml` as
 > well as other versions of that file. You may use symlinks to keep the
 > versioning number of the input files while still giving the tool a consistent
 > input path.
@@ -66,7 +73,8 @@ distribution scheme. One popular example is merging the parties *CDU* and *CSU*
 to one party and see how this changes the results.
 In this case there will be one table for each year per specified `op`.
 
-> [!NOTE] If you have suggestions for useful perprocessing operations, feel free
+> [!NOTE]
+> If you have suggestions for useful perprocessing operations, feel free
 > to reach out to me via a github issue.
 
 ## Contributing
