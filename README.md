@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2025 Lukas Heindl
+
+SPDX-License-Identifier: MIT
+-->
+
 > [!WARNING]
 > no warranty for the corretness of the calculation presented here. I
 > tried to include references to the legal text. Note that they refer to the
