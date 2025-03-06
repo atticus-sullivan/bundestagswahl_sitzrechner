@@ -55,7 +55,7 @@ Arguments:
 
 Options:
   -d, --data <DATA_STEM>  [default: ./data/]
-  -s, --scheme <SCHEMES>  [possible values: scheme2021, scheme2025]
+  -s, --scheme <SCHEMES>  [possible values: scheme2021, scheme2025, scheme-mehrheit]
       --op <CALC_OPS>     [default: none] [possible values: none, merge-cdu-csu]
   -h, --help              Print help
   -V, --version           Print version

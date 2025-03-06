@@ -11,6 +11,7 @@ mod types;
 mod wahl;
 mod wahl2021;
 mod wahl2025;
+mod wahl_mehrheit;
 
 use std::collections::BTreeMap;
 use std::path::PathBuf;
@@ -62,10 +63,21 @@ impl ElectionCalc for ElectionCalc2025 {
         wahl2025::calc(bund, parteinr_name)
     }
 }
+#[derive(Clone, Debug)]
+struct ElectionCalcMehrheit {}
+impl ElectionCalc for ElectionCalcMehrheit {
+    fn calc(
+        &self,
+        bund: Bund,
+        parteinr_name: &BTreeMap<GruppeNr, String>,
+    ) -> Result<(BTreeMap<GruppeNr, (u64, u64)>, u64, Bund)> {
+        wahl_mehrheit::calc(bund, parteinr_name)
+    }
+}
 
 fn elections(
     inputs: &[(String, PathBuf, PathBuf)],
-    calcs: &Vec<(String, String, Box<dyn ElectionCalc>)>,
+    calcs: &Vec<(String, Option<String>, Box<dyn ElectionCalc>)>,
     calc_ops: &[CalcOp],
 ) -> Result<()> {
     for (name, stimmen, struktur) in inputs.iter() {
@@ -153,8 +165,10 @@ fn elections(
 
                 // add the headers for the columns which are inserted in the following
                 header.push(scheme_n);
-                // amount of wahlkreismandate/direktmandate of that party
-                header.push(wkm_name);
+                if let Some(wkm_name) = wkm_name {
+                    // amount of wahlkreismandate/direktmandate of that party
+                    header.push(wkm_name);
+                }
                 // percentage of votes for partei, not considering parteien which were neglected (too
                 // few votes) in this scheme
                 header.push("% > H");
@@ -197,7 +211,9 @@ fn elections(
                     }
 
                     x.push(format!("{}", seats));
-                    x.push(format!("{}", wkm));
+                    if wkm_name.is_some() {
+                        x.push(format!("{}", wkm));
+                    }
                     // percentage of filtered votes for that partei
                     x.push(format!(
                         "{:.2}",
@@ -265,27 +281,30 @@ struct Cli {
 enum Scheme {
     Scheme2021,
     Scheme2025,
+    SchemeMehrheit,
 }
 impl Scheme {
     fn to_election_calc(&self) -> Box<dyn ElectionCalc> {
         match self {
             Scheme::Scheme2021 => Box::new(ElectionCalc2021 {}),
             Scheme::Scheme2025 => Box::new(ElectionCalc2025 {}),
+            Scheme::SchemeMehrheit => Box::new(ElectionCalcMehrheit{}),
         }
     }
     fn title(&self) -> String {
         match self {
             Scheme::Scheme2021 => "2021",
             Scheme::Scheme2025 => "2025",
+            Scheme::SchemeMehrheit => "Mehrheit",
         }
         .to_owned()
     }
-    fn wkm_name(&self) -> String {
+    fn wkm_name(&self) -> Option<String> {
         match self {
-            Scheme::Scheme2021 => "DM",
-            Scheme::Scheme2025 => "WKM",
+            Scheme::Scheme2021 => Some("DM".to_owned()),
+            Scheme::Scheme2025 => Some("WKM".to_owned()),
+            Scheme::SchemeMehrheit => None,
         }
-        .to_owned()
     }
 }
 
