@@ -14,13 +14,16 @@ use crate::wahl;
 // used (legal) references:
 // [1]: docs/2025_bundeswahlgesetz.pdf
 
+// TODO
 pub fn calc(
     bund: Bund,
     parteinr_name: &BTreeMap<GruppeNr, String>,
-) -> Result<(BTreeMap<GruppeNr, u64>, u64, Bund)> {
+) -> Result<(BTreeMap<GruppeNr, (u64, u64)>, u64, Bund)> {
     // [1] -> § 1 Abs.1 Satz 1
     let total_seats = 630;
     let wahlkreismandate = wahl::wahlkreismandate(&bund);
+
+    let total_wkm = wahl::sum_total_wahlkreismandate(&wahlkreismandate);
 
     // [1] -> § 4 Abs.3
     // TODO potential reduction of total seats (independant candidates)
@@ -35,7 +38,7 @@ pub fn calc(
     // [1] -> § 4 Abs.2 Satz 2 2.
     // Bei Verteilung der Sitze auf Landeslisten -> nur Parteien >= 3 Direktmandate oder >= 5%
     // Zweitstimmen
-    let bund = wahl::huerde(bund, &wahlkreismandate, 3, 0.05, keep)?;
+    let bund = wahl::huerde(bund, &total_wkm, 3, 0.05, keep)?;
 
     // [1] -> § 4 Abs.2 Satz 1
     // Verteilung der Sitze auf die Parteien anhand Zweitstimmen
@@ -53,7 +56,13 @@ pub fn calc(
     // [1] -> § 4 Abs.4
     // TODO potential +x seats due to >50% votes but not >50% seats
 
-    Ok((ov, total_seats, bund))
+    // include amount of wahlkreismandate
+    let ret = ov
+        .into_iter()
+        .map(|(p, s)| (p, (*total_wkm.get(&p).unwrap_or(&0), s)))
+        .collect::<BTreeMap<_, _>>();
+
+    Ok((ret, total_seats, bund))
 }
 
 /// Berechnet die *Oberverteilung* für die `parteien_bund` auf Basis der `base_seats` Sitze und der

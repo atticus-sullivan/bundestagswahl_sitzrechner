@@ -4,16 +4,16 @@ use anyhow::Result;
 
 use crate::types::GruppeNr;
 
-pub fn banzhaf(verteilung: &BTreeMap<GruppeNr, u64>) -> Result<BTreeMap<GruppeNr, f64>> {
+pub fn banzhaf(verteilung: &BTreeMap<GruppeNr, (u64, u64)>) -> Result<BTreeMap<GruppeNr, f64>> {
     // how many votes need to win a vote
-    let quorum = (verteilung.values().sum::<u64>() as f64 / 2_f64).ceil() as u64;
+    let quorum = (verteilung.values().map(|i| i.1).sum::<u64>() as f64 / 2_f64).ceil() as u64;
 
     // all kinds of koalitionen
     let potenzmenge = generate_power_set(&verteilung.keys().cloned().collect::<Vec<GruppeNr>>());
 
     // calculate what koalitionen win the vote
     let winning_coalition = potenzmenge.iter().filter_map(|i| {
-        let votes = i.iter().map(|j| verteilung[j]).sum::<u64>();
+        let votes = i.iter().map(|j| verteilung[j]).map(|i| i.1).sum::<u64>();
         if votes >= quorum {
             Some((votes, i))
         } else {
@@ -25,7 +25,7 @@ pub fn banzhaf(verteilung: &BTreeMap<GruppeNr, u64>) -> Result<BTreeMap<GruppeNr
     let mut fraktion_banzhaf_macht: BTreeMap<GruppeNr, u64> = Default::default();
     for (votes, w) in winning_coalition {
         for f in w.iter() {
-            if votes - verteilung[f] < quorum {
+            if votes - verteilung[f].1 < quorum {
                 *fraktion_banzhaf_macht.entry(*f).or_insert(0) += 1;
             }
         }

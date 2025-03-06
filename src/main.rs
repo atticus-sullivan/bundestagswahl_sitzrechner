@@ -37,7 +37,7 @@ pub trait ElectionCalc {
         &self,
         bund: Bund,
         parteinr_name: &BTreeMap<GruppeNr, String>,
-    ) -> Result<(BTreeMap<GruppeNr, u64>, u64, Bund)>;
+    ) -> Result<(BTreeMap<GruppeNr, (u64, u64)>, u64, Bund)>;
 }
 
 #[derive(Clone, Debug)]
@@ -47,7 +47,7 @@ impl ElectionCalc for ElectionCalc2021 {
         &self,
         bund: Bund,
         parteinr_name: &BTreeMap<GruppeNr, String>,
-    ) -> Result<(BTreeMap<GruppeNr, u64>, u64, Bund)> {
+    ) -> Result<(BTreeMap<GruppeNr, (u64, u64)>, u64, Bund)> {
         wahl2021::calc(bund, parteinr_name)
     }
 }
@@ -58,14 +58,14 @@ impl ElectionCalc for ElectionCalc2025 {
         &self,
         bund: Bund,
         parteinr_name: &BTreeMap<GruppeNr, String>,
-    ) -> Result<(BTreeMap<GruppeNr, u64>, u64, Bund)> {
+    ) -> Result<(BTreeMap<GruppeNr, (u64, u64)>, u64, Bund)> {
         wahl2025::calc(bund, parteinr_name)
     }
 }
 
 fn elections(
     inputs: &[(String, PathBuf, PathBuf)],
-    calcs: &Vec<(String, Box<dyn ElectionCalc>)>,
+    calcs: &Vec<(String, String, Box<dyn ElectionCalc>)>,
     calc_ops: &[CalcOp],
 ) -> Result<()> {
     for (name, stimmen, struktur) in inputs.iter() {
@@ -145,7 +145,7 @@ fn elections(
             totals.push(format!("{:.2}", shown_votes_p));
 
             // add columns for each scheme that should be calculated
-            for (scheme_n, scheme) in calcs.iter() {
+            for (scheme_n, wkm_name, scheme) in calcs.iter() {
                 // add one empty column as separator before each scheme
                 totals.extend([""].into_iter().map(|x| x.to_owned()));
                 header.push("");
@@ -153,6 +153,8 @@ fn elections(
 
                 // add the headers for the columns which are inserted in the following
                 header.push(scheme_n);
+                // amount of wahlkreismandate/direktmandate of that party
+                header.push(wkm_name);
                 // percentage of votes for partei, not considering parteien which were neglected (too
                 // few votes) in this scheme
                 header.push("% > H");
@@ -178,6 +180,7 @@ fn elections(
 
                 //
                 for (p, seats) in sitze.iter() {
+                    let (wkm, seats) = seats;
                     // obtain the row should be appended to (potentially create it)
                     let x =
                         tab_content
@@ -194,6 +197,7 @@ fn elections(
                     }
 
                     x.push(format!("{}", seats));
+                    x.push(format!("{}", wkm));
                     // percentage of filtered votes for that partei
                     x.push(format!(
                         "{:.2}",
@@ -211,6 +215,7 @@ fn elections(
                 }
                 // total amount of needed seats with that scheme
                 totals.push(format!("{}", total));
+                totals.push(format!("{}", sitze.values().map(|(_, i)| i).sum::<u64>()));
                 // skip the columns which do not get total values
                 totals.extend(["", "", ""].into_iter().map(|x| x.to_owned()));
                 col_offset += 4;
@@ -275,6 +280,13 @@ impl Scheme {
         }
         .to_owned()
     }
+    fn wkm_name(&self) -> String {
+        match self {
+            Scheme::Scheme2021 => "DM",
+            Scheme::Scheme2025 => "WKM",
+        }
+        .to_owned()
+    }
 }
 
 #[derive(clap::ValueEnum, Clone, Debug)]
@@ -330,7 +342,7 @@ fn main() -> Result<()> {
         &args
             .schemes
             .iter()
-            .map(|s| (s.title(), s.to_election_calc()))
+            .map(|s| (s.title(), s.wkm_name(), s.to_election_calc()))
             .collect::<Vec<_>>(),
         &args.calc_ops,
     )?;

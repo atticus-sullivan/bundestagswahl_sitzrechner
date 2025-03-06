@@ -17,10 +17,12 @@ use crate::wahl;
 pub fn calc(
     bund: Bund,
     parteinr_name: &BTreeMap<GruppeNr, String>,
-) -> Result<(BTreeMap<GruppeNr, u64>, u64, Bund)> {
+) -> Result<(BTreeMap<GruppeNr, (u64, u64)>, u64, Bund)> {
     // [1] -> § 1 Abs.1 Satz 1
     let total_seats = 598;
     let direktmandate = wahl::wahlkreismandate(&bund);
+
+    let total_dm = wahl::sum_total_wahlkreismandate(&direktmandate);
 
     // [1] -> § 6 Abs.1
     // TODO potential reduction of total seats (independant candidates)
@@ -35,7 +37,7 @@ pub fn calc(
     // [1] -> § 6 Abs.3
     // Bei Verteilung der Sitze auf Landeslisten -> nur Parteien >= 3 Direktmandate oder >= 5%
     // Zweitstimmen
-    let bund = wahl::huerde(bund, &direktmandate, 3, 0.05, keep)?;
+    let bund = wahl::huerde(bund, &total_dm, 3, 0.05, keep)?;
 
     // [1] -> § 6 Abs.2 Satz 1f
     // Gesamtzahl der Sitze werden auf die Länder anhand der Bevölkerung aufgeteilt
@@ -62,7 +64,13 @@ pub fn calc(
     // [1] -> § 6 Abs.7
     // TODO potential +x seats due to >50% votes but not >50% seats
 
-    Ok((fin, seats, bund))
+    // include amount of wahlkreismandate
+    let ret = fin
+        .into_iter()
+        .map(|(p, s)| (p, (*total_dm.get(&p).unwrap_or(&0), s)))
+        .collect::<BTreeMap<_, _>>();
+
+    Ok((ret, seats, bund))
 }
 
 /// Berechnet das *Sitzkontingent* für die verschiedenen `leander` auf Basis der `base_seats` Sitze

@@ -32,9 +32,18 @@ pub fn wahlkreismandate(bund: &Bund) -> Vec<BTreeMap<GruppeNr, u64>> {
         .collect()
 }
 
+pub fn sum_total_wahlkreismandate(wkm: &[BTreeMap<GruppeNr, u64>]) -> BTreeMap<GruppeNr, u64> {
+    wkm.iter()
+        .flat_map(|wkm| wkm.iter())
+        .fold(BTreeMap::new(), |mut acc, (&i, &wkm)| {
+            *acc.entry(i).or_insert(0) += wkm;
+            acc
+        })
+}
+
 pub fn huerde(
     bund: Bund,
-    wkm: &[BTreeMap<GruppeNr, u64>],
+    total_wkm: &BTreeMap<GruppeNr, u64>,
     wkm_huerde: u64,
     prozent_huerde: f64,
     keep: HashSet<GruppeNr>,
@@ -44,14 +53,6 @@ pub fn huerde(
         .values()
         .filter_map(|p| p.zweitstimmen)
         .sum::<u64>() as f64;
-
-    let total_wkm =
-        wkm.iter()
-            .flat_map(|wkm| wkm.iter())
-            .fold(BTreeMap::new(), |mut acc, (&i, &wkm)| {
-                *acc.entry(i).or_insert(0) += wkm;
-                acc
-            });
 
     let parteien_bund: BTreeMap<_, _> = bund
         .parteien
