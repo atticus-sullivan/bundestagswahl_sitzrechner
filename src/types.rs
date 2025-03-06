@@ -176,9 +176,7 @@ impl Bund {
         for p in parteien {
             self.parteien.remove(p);
         }
-        if let Some(k) = accumulated.0 {
-            self.parteien.insert(k, accumulated.1);
-        }
+        self.parteien.insert(parteien[0], accumulated.1);
 
         for l in self.laender.iter_mut() {
             l.merge_parteien(parteien);
@@ -265,9 +263,7 @@ impl Land {
         for p in parteien {
             self.parteien.remove(p);
         }
-        if let Some(k) = accumulated.0 {
-            self.parteien.insert(k, accumulated.1);
-        }
+        self.parteien.insert(parteien[0], accumulated.1);
 
         for wk in self.wahlkreise.iter_mut() {
             wk.merge_parteien(parteien);
@@ -324,9 +320,7 @@ impl Wahlkreis {
         for p in parteien {
             self.parteien.remove(p);
         }
-        if let Some(k) = accumulated.0 {
-            self.parteien.insert(k, accumulated.1);
-        }
+        self.parteien.insert(parteien[0], accumulated.1);
     }
 }
 
