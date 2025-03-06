@@ -218,7 +218,7 @@ fn elections(
                 totals.push(format!("{}", sitze.values().map(|(_, i)| i).sum::<u64>()));
                 // skip the columns which do not get total values
                 totals.extend(["", "", ""].into_iter().map(|x| x.to_owned()));
-                col_offset += 4;
+                col_offset += 5;
             }
 
             // assemble the table
