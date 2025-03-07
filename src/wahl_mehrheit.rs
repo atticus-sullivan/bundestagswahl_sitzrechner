@@ -21,10 +21,10 @@ pub fn calc(
     // include amount of wahlkreismandate
     let ret = total_dm
         .into_iter()
-        .map(|(p, s)| (p, (s,s)))
+        .map(|(p, s)| (p, (s, s)))
         .collect::<BTreeMap<_, _>>();
 
-    let seats = ret.values().map(|(s,_)| s).sum::<u64>();
+    let seats = ret.values().map(|(s, _)| s).sum::<u64>();
 
     Ok((ret, seats, bund))
 }

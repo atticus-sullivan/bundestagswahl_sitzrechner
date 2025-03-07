@@ -27,10 +27,16 @@ use clap::Parser;
 
 use types::{Bund, GruppeNr};
 
-const COLOR_ALT_BG: Color = Color::Rgb {
+const COLOR_TOTAL_BG: Color = Color::Rgb {
     r: 105,
     g: 112,
     b: 153,
+};
+
+const COLOR_ALT_BG: Color = Color::Rgb {
+    r: 41,
+    g: 44,
+    b: 60,
 };
 
 pub trait ElectionCalc {
@@ -247,16 +253,20 @@ fn elections(
 
             tab.set_header(header);
             // convert BTreeMap to flat vector with the key prepended to the value
-            tab.add_rows(tab_content.into_iter().map(|(pn, xs)| {
-                let mut v = vec![pn.clone()];
-                v.extend(xs);
-                v
-            }));
+            for (i, (pn, xs)) in tab_content.into_iter().enumerate() {
+                let mut r = vec![pn];
+                r.extend(xs);
+                if i % 2 == 0 {
+                    tab.add_row(r.into_iter().map(|i| Cell::new(i).bg(COLOR_ALT_BG)));
+                } else {
+                    tab.add_row(r);
+                }
+            }
             // prepend "totals" literal to the totals row and style that row
             {
                 let mut t = vec!["totals".to_owned()];
                 t.extend(totals);
-                tab.add_row(t.into_iter().map(|i| Cell::new(i).bg(COLOR_ALT_BG)));
+                tab.add_row(t.into_iter().map(|i| Cell::new(i).bg(COLOR_TOTAL_BG)));
             }
 
             println!("{}", tab);
@@ -288,7 +298,7 @@ impl Scheme {
         match self {
             Scheme::Scheme2021 => Box::new(ElectionCalc2021 {}),
             Scheme::Scheme2025 => Box::new(ElectionCalc2025 {}),
-            Scheme::SchemeMehrheit => Box::new(ElectionCalcMehrheit{}),
+            Scheme::SchemeMehrheit => Box::new(ElectionCalcMehrheit {}),
         }
     }
     fn title(&self) -> String {
