@@ -2,18 +2,21 @@
 //
 // SPDX-License-Identifier: MIT
 
-use std::{collections::BTreeMap, fmt::Display};
+use std::{collections::BTreeMap, fmt::Debug};
 
-pub fn sls<T>(xs: BTreeMap<T, f64>, total: u64) -> BTreeMap<T, u64>
+use anyhow::{Result, ensure};
+
+pub fn sls<T>(xs: BTreeMap<T, f64>, total: u64) -> Result<BTreeMap<T, u64>>
 where
-    T: Ord + Clone + Display,
+    T: Ord + Clone + Debug,
 {
+    ensure!(xs.len() > 0, "SLS does not work with an empty distribution");
     let mut distribution: BTreeMap<T, u64> = BTreeMap::new();
 
     let mut zut_div: f64 = xs.iter().map(|x| x.1).sum::<f64>() / total as f64;
     // println!(
-    //     "sls start: {zut_div} | {total} | {}",
-    //     xs.iter().map(|x| x.1).sum::<f64>()
+    //     "sls start: {zut_div} | {total} | {:#?}",
+    //     xs
     // );
 
     // find a working divisor
@@ -40,5 +43,5 @@ where
     }
 
     // println!("sls res: {zut_div}");
-    distribution
+    Ok(distribution)
 }

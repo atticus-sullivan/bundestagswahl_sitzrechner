@@ -88,7 +88,7 @@ fn sitzkontingent(laender: &[Land], base_seats: u64) -> Result<BTreeMap<usize, u
             .map(|(i, j)| (i, j.einwohner))
             .collect(),
         base_seats,
-    );
+    )?;
 
     Ok(dist)
 }
@@ -120,7 +120,7 @@ fn unterverteilung(
                 })
                 .collect::<Result<_>>()?,
             sk[&li],
-        );
+        )?;
         uv.insert(li, dist);
     }
     Ok(uv)
@@ -196,7 +196,7 @@ fn oberverteilung(
                 })
                 .collect::<Result<_>>()?,
             total_seats,
-        );
+        )?;
 
         let unausgeglichener_ueberhang = msz
             .iter()

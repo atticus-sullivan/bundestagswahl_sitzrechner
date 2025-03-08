@@ -89,7 +89,7 @@ fn oberverteilung(
             })
             .collect::<Result<_>>()?,
         base_seats,
-    );
+    )?;
     Ok(dist)
 }
 
