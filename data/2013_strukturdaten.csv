@@ -1,0 +1,25 @@
+# © Die Bundeswahlleiterin, Wiesbaden 2013;;;
+# Extrahiert aus 2013_btw13_sitzberechnung.pdf;;;
+#;;;
+# Strukturdaten für die Wahlkreise zum 18. Deutschen Bundestag;;;
+#;;;
+# Zeichensatz: UTF-8 mit BOM. Trennzeichen: Semikolon.;;;
+#;;;
+Spalten-Nr.;;;4
+Land;Wahlkreis-Nr.;Wahlkreis-Name;Bevölkerung am 31.12.2012 - Deutsche (in 1000)
+Schleswig-Holstein;901;Land insgesamt;2686,085
+Mecklenburg-Vorpommern;913;Land insgesamt;1585,032
+Hamburg;902;Land insgesamt;1559,655
+Niedersachsen;903;Land insgesamt;7354,892
+Bremen;904;Land insgesamt;575,805
+Brandenburg;912;Land insgesamt;2418,267
+Sachsen-Anhalt;915;Land insgesamt;2247,673
+Berlin;911;Land insgesamt;3025,288
+Nordrhein-Westfalen;905;Land insgesamt;15895,182
+Sachsen;914;Land insgesamt;4005,278
+Hessen;906;Land insgesamt;5388,35
+Thüringen;916;Land insgesamt;2154,202
+Rheinland-Pfalz;907;Land insgesamt;3672,888
+Bayern;909;Land insgesamt;11353,264
+Baden-Württemberg;908;Land insgesamt;9482,902
+Saarland;910;Land insgesamt;919,402

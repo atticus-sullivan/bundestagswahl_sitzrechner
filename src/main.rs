@@ -49,6 +49,19 @@ pub trait ElectionCalc {
 }
 
 #[derive(Clone, Debug)]
+struct ElectionCalc2013 {}
+impl ElectionCalc for ElectionCalc2013 {
+    fn calc(
+        &self,
+        bund: Bund,
+        parteinr_name: &BTreeMap<GruppeNr, String>,
+    ) -> Result<(BTreeMap<GruppeNr, (u64, u64)>, u64, Bund)> {
+        // there was no change related to the distribution scheme between 2013 and 2017 this is not
+        // that easy to prove maybe refer to https://www.buzer.de/gesetz/33/l.htm
+        wahl2017::calc(bund, parteinr_name)
+    }
+}
+#[derive(Clone, Debug)]
 struct ElectionCalc2017 {}
 impl ElectionCalc for ElectionCalc2017 {
     fn calc(
@@ -301,6 +314,7 @@ struct Cli {
 
 #[derive(clap::ValueEnum, Clone, Debug)]
 enum Scheme {
+    Scheme2013,
     Scheme2017,
     Scheme2021,
     Scheme2025,
@@ -309,6 +323,7 @@ enum Scheme {
 impl Scheme {
     fn to_election_calc(&self) -> Box<dyn ElectionCalc> {
         match self {
+            Scheme::Scheme2013 => Box::new(ElectionCalc2013 {}),
             Scheme::Scheme2017 => Box::new(ElectionCalc2017 {}),
             Scheme::Scheme2021 => Box::new(ElectionCalc2021 {}),
             Scheme::Scheme2025 => Box::new(ElectionCalc2025 {}),
@@ -317,6 +332,7 @@ impl Scheme {
     }
     fn title(&self) -> String {
         match self {
+            Scheme::Scheme2013 => "2013",
             Scheme::Scheme2017 => "2017",
             Scheme::Scheme2021 => "2021",
             Scheme::Scheme2025 => "2025",
@@ -326,6 +342,7 @@ impl Scheme {
     }
     fn wkm_name(&self) -> Option<String> {
         match self {
+            Scheme::Scheme2013 => Some("DM".to_owned()),
             Scheme::Scheme2017 => Some("DM".to_owned()),
             Scheme::Scheme2021 => Some("DM".to_owned()),
             Scheme::Scheme2025 => Some("WKM".to_owned()),

@@ -22,6 +22,10 @@ def load_from_csv(fn):
     parteien = {}
     parteien_id_max = 0
 
+    sub_gebiet = 0
+    if fn.endswith("2013_gesamtergebnis.csv"):
+        sub_gebiet = 900
+
     with open(fn) as csv_file:
         csv_reader = list(csv.reader(csv_file, delimiter=';'))
         hdr = []
@@ -57,7 +61,7 @@ def load_from_csv(fn):
                             0 + tup[1] if row[2+i*4+19] == "" else int(row[2+i*4+19]) + tup[1]
                             )
 
-                gebiet = {"name":row[1], "id":row[0], "parent":row[2], "results":[]}
+                gebiet = {"name":row[1], "id":int(row[0]), "parent":row[2], "results":[]}
                 for p,st in votes.items():
                     if p not in parteien:
                         parteien[p] = parteien_id_max
@@ -67,9 +71,11 @@ def load_from_csv(fn):
                 if len(csv_reader) == j+1:
                     gebiet["type"] = "BUND"
                     gebiet["ueg_type"] = None
+                    gebiet["id"] -= sub_gebiet
                 elif all(map(lambda x: x == '', csv_reader[j+1])):
                     gebiet["type"] = "LAND"
                     gebiet["ueg_type"] = "BUND"
+                    gebiet["id"] -= sub_gebiet
                 else:
                     gebiet["type"] = "WAHLKREIS"
                     gebiet["ueg_type"] = "LAND"

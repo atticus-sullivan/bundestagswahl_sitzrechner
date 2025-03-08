@@ -95,6 +95,14 @@ Also note that I won't give references to the legislative texts in the
 descriptions here. Instead the comments in the source code contains such
 references.
 
+#### 2013
+Uses the same scheme like in 2017. This cannot be proven easily, maybe refer to
+[this site](https://www.buzer.de/gesetz/33/l.htm). Note: The text that can be
+found for 2013 in the wayback machine was not up-to-date for the 2013 election
+anymore (see [this change](https://www.buzer.de/gesetz/10627/a180951.htm)).
+After that change the next change concerning the distriution scheme is [this
+one](https://www.buzer.de/gesetz/14232/a254521.htm).
+
 #### 2017
 This is the scheme which was used for the election of the Bundestag in 2017. It
 consists of multiple steps:
@@ -140,6 +148,9 @@ consists of multiple steps:
 8. Continue figuring out who exactly gets into the parliament (not of interest
    here)
 
+The change compared to 2017/2013 was done
+[here](https://www.buzer.de/gesetz/14232/a254521.htm).
+
 #### 2025
 This is the scheme which was used for the election of the Bundestag in 2025. It
 is basically a pure Verhältniswahlrecht for most part and thus much simpler than
@@ -157,6 +168,9 @@ the scheme of 2021. These are the steps:
 5. Continue figuring out who exactly gets into the parliament, which includes
    the so-called Zweitstimmendeckung (not of interest
    here)
+
+The change compared to 2021 was done
+[here](https://www.buzer.de/gesetz/15895/a298472.htm).
 
 #### mehrheit
 This wasn't used so far in Germany. It is an implementation of a pure
@@ -192,4 +206,10 @@ have an idea how to extend the tool? Great, same thing just drop me a message.
 > whole setting things up part in a file with the same filename buf the
 > extension replaced with `.url` (the file is a simple text file though)
 
-[Wayback Machine for bundeswahlgesetz on gesetze-im-internet.de](https://web.archive.org/web/20160423023415/http://www.gesetze-im-internet.de/bwahlg/index.html#BJNR003830956BJNE001607377)
+- [Wayback Machine for Bundeswahlgesetz on gesetze-im-internet.de](https://web.archive.org/web/20160423023415/http://www.gesetze-im-internet.de/bwahlg/index.html#BJNR003830956BJNE001607377)
+- [lookup of changes in the Bundeswahlgesetz](https://www.buzer.de/gesetz/33/l.htm)
+- Bundestag website also has an archive:
+[https://webarchiv.bundestag.de/cgi/archive.php?jahr=2016] find the
+Bundeswahlgesetz at `Der Bundestag > Aufgaben > Rechtliche Grundlage`
+[example](https://webarchiv.bundestag.de/cgi/show.php?id=1278&jahr=2016)
+but it seems like this project stopped 2016
