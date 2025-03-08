@@ -95,6 +95,28 @@ Also note that I won't give references to the legislative texts in the
 descriptions here. Instead the comments in the source code contains such
 references.
 
+#### 2017
+This is the scheme which was used for the election of the Bundestag in 2017. It
+consists of multiple steps:
+1. Base Seats (598) get reduced by the number of directly elected independant
+   candidates (not considered here yet, but usually this case does not happen ->
+   doesn't really matter most of the time).
+2. Neglect some Zweitstimmen under some circumstances (not considered here
+   because with the current data from Bundeswahlleiter:in this is not possible)
+3. Neglect all Zweitstimmen for Parteien which got `<5%` of the Zweitstimmen and
+   didn't win `>=3` Wahlkreise (Special case are Parteien of national
+   minorities).
+4. Distribute the base seats (via SLS) among the Bundesländer according to the
+   population (Sitzkontingent)
+5. For each Bundesland, distribute the seats (via SLS) of the Sitzkontingent
+   according to the Zweitstimmen among the Parteien (Unterverteilung)
+6. Calculate how many seats each Partei should get at least based on
+   Unterverteilung and Direktmandate (Mindestsitzzahl)
+7. Increase the total number of seats (and redistribute them with SLS) until
+   each Partei gets at least Mindestsitzzahl many seats (Oberverteilung)
+8. Continue figuring out who exactly gets into the parliament (not of interest
+   here)
+
 #### 2021
 This is the scheme which was used for the election of the Bundestag in 2021. It
 consists of multiple steps:
@@ -169,3 +191,5 @@ have an idea how to extend the tool? Great, same thing just drop me a message.
 > I keep references to the origin of the external files I include to ease the
 > whole setting things up part in a file with the same filename buf the
 > extension replaced with `.url` (the file is a simple text file though)
+
+[Wayback Machine for bundeswahlgesetz on gesetze-im-internet.de](https://web.archive.org/web/20160423023415/http://www.gesetze-im-internet.de/bwahlg/index.html#BJNR003830956BJNE001607377)

@@ -16,10 +16,9 @@ use crate::sls::sls;
 use crate::wahl;
 
 // used (legal) references:
-// [1]: docs/2017_bundeswahlgesetz.pdf # TODO
+// [1]: docs/2017_bundeswahlgesetz.pdf
 
 // TODO
-// references to the legal text are just copied from 2021 so they are probably wrong
 pub fn calc(
     bund: Bund,
     parteinr_name: &BTreeMap<GruppeNr, String>,
@@ -64,7 +63,7 @@ pub fn calc(
     // [1] -> § 6 Abs.5+6
     // Gesamtzahl der Sitze wird so lange erhöht, bis jede Partei (bei der Verteilung nach den
     // bundesweiten Zweitstimmen) mindestens so viele Sitze bekommt wie ihr nach Mindestsitzzahl
-    // zusteht. Jedoch können dabei bis zu 3 Ueberhangsmandate unausgeglichen bleiben.
+    // zusteht.
     let (fin, seats) = oberverteilung(&bund.parteien, &msz)?;
 
     // [1] -> § 6 Abs.7
@@ -100,14 +99,13 @@ fn mindestsitzzahl(
             // direktmandate der Partei im Land
             let dm_p = *direktmandate[j].get(i).unwrap_or(&0);
 
-            // [1] -> § 6 Abs.5 Satz 2
-            // "höhere Wert aus [...] der Zahl der Im Land [...] errungenen [Direktmandate] oder dem
-            // [...] Mittelwert [(siehe oben)] [...]"
+            // [1] -> § 6 Abs.5 Satz 1
+            // "mindestens [...] die bei der ersten Verteilung [...] für sie ermittelten zuzüglich
+            // der in den Wahlkreisen errungenen Sitze die nicht [...] von der Zahl der für die
+            // Landesliste ermittelten Sitze abgerechnet werden können
+            // => max(sitzkontingent, wahlkreismandate)
             msz += skv_p.max(dm_p);
         }
-        // [1] -> § 6 Abs.5 Satz 3
-        // "Jede Partei erhält mindestens die bei der ersten Verteilung [...] für ihre Landesliste
-        // ermittelten ermittelten Sitze"
         msa.insert(*i, msz);
     }
     Ok(msa)
@@ -151,14 +149,9 @@ fn oberverteilung(
             .collect::<BTreeMap<_, _>>();
         let unausgeglichener_ueberhang_cnt = unausgeglichener_ueberhang.values().sum::<u64>();
 
-        // [1] -> § 6 Abs.5 Satz 4
-        // "Bei der Erhöhung bleiben in den Wahlkreisen errungene Sitze [...] bis zu einer Zahl von
-        // drei unberücksichtigt"
         if unausgeglichener_ueberhang_cnt == 0 {
             return Ok((
                 dist,
-                // [1] -> § 6 Abs.5 Satz 5
-                // "die Gesamtzahl der Sitze [...] erhöht sich um die Unterschiedszahl"
                 total_seats,
             ));
         }
