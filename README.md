@@ -83,8 +83,83 @@ In this case there will be one table for each year per specified `op`.
 > If you have suggestions for useful perprocessing operations, feel free
 > to reach out to me via a github issue.
 
-## Contributing
+### Different SCHEMES
+You can select to calculate the distribution of the seats with different schemes
+(e.g. legislation in place for a certain election).
 
+Note the term *SLS* is used quite often in the description of different
+schemes. *SLS* is short for *Sainte-Laguë/Schepers* which is a method to
+distribute e.g. seats proportional to some other distribution (e.g. votes)
+
+Also note that I won't give references to the legislative texts in the
+descriptions here. Instead the comments in the source code contains such
+references.
+
+#### 2021
+This is the scheme which was used for the election of the Bundestag in 2021. It
+consists of multiple steps:
+1. Base Seats (598) get reduced by the number of directly elected independant
+   candidates (not considered here yet, but usually this case does not happen ->
+   doesn't really matter most of the time).
+2. Neglect some Zweitstimmen under some circumstances (not considered here
+   because with the current data from Bundeswahlleiter:in this is not possible)
+3. Neglect all Zweitstimmen for Parteien which got `<5%` of the Zweitstimmen and
+   didn't win `>=3` Wahlkreise (Special case are Parteien of national
+   minorities).
+4. Distribute the base seats (via SLS) among the Bundesländer according to the
+   population (Sitzkontingent)
+5. For each Bundesland, distribute the seats (via SLS) of the Sitzkontingent
+   according to the Zweitstimmen among the Parteien (Unterverteilung)
+6. Calculate how many seats each Partei should get at least based on
+   Unterverteilung and Direktmandate (Mindestsitzzahl)
+7. Increase the total number of seats (and redistribute them with SLS) until
+   each Partei gets at least Mindestsitzzahl many seats (three seats are allowed
+   to be missing) (Oberverteilung)
+8. Continue figuring out who exactly gets into the parliament (not of interest
+   here)
+
+#### 2025
+This is the scheme which was used for the election of the Bundestag in 2025. It
+is basically a pure Verhältniswahlrecht for most part and thus much simpler than
+the scheme of 2021. These are the steps:
+1. Base Seats (630) get reduced by the number of directly elected independant
+   candidates (not considered here yet, but usually this case does not happen ->
+   doesn't really matter most of the time).
+2. Neglect some Zweitstimmen under some circumstances (not considered here
+   because with the current data from Bundeswahlleiter:in this is not possible)
+3. Neglect all Zweitstimmen for Parteien which got `<5%` of the Zweitstimmen and
+   didn't win `>=3` Wahlkreise (Special case are Parteien of national
+   minorities).
+4. Distribute the available seats based on the Zweitstimmen among the Parteien
+   (via SLS).
+5. Continue figuring out who exactly gets into the parliament, which includes
+   the so-called Zweitstimmendeckung (not of interest
+   here)
+
+#### mehrheit
+This wasn't used so far in Germany. It is an implementation of a pure
+Mehrheitswahlrecht not too different from the US. There is only the Erststimme
+and each person winning a Wahlkreis gets into the Parliament. Due to the
+Wahlkreise being constructed so that the population is roughly the same, there
+should be no need of weighting the winners of a Wahlkreis with the contained
+population.
+
+### Different CALC_OPS
+The purpose of this option is to allow some kind or preprocessing before handing
+the data to the distribution scheme.
+
+#### none
+This is the default and just a dummy value which does *no preprocessing*.
+
+#### merge-cdu-csu
+This merges the Erst- and Zweitstimmen of the Parteien *CDU* and *CSU* which
+traditionally form a Fraktion together in the parliamant anyhow in the end.
+
+The idea here is to investiage what impact it would have if this special status
+of the *CSU* would be removed (no other Bundestland and no other Partei has
+this).
+
+## Contributing
 You don't need to write code and open pull requests in order to contribute. You
 found a bug? Nice, just drop me a message (preferably via a github issue). You
 have an idea how to extend the tool? Great, same thing just drop me a message.
