@@ -95,6 +95,18 @@ Also note that I won't give references to the legislative texts in the
 descriptions here. Instead the comments in the source code contains such
 references.
 
+#### < 2013
+I did not find machine readable data for elections prior to 2013 (neither on
+bundeswahlleiter.de nor on govdata.de). Thus, it might not make that much sense
+to implement these schemes (the guided calculation from Bundeswahlleiter:in does
+exist as far as I can see though). The only benfit would be to have further
+schemes to compare newer ones to.
+
+Also note that for the scheme changed in 2013 (significant changes in the
+legislative text, I'm not sure though how large the effective changes are, maybe
+most of the changes is just a simple rewrite without introducing effective
+changes)
+
 #### 2013
 Uses the same scheme like in 2017. This cannot be proven easily, maybe refer to
 [this site](https://www.buzer.de/gesetz/33/l.htm). Note: The text that can be
