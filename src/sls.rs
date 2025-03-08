@@ -4,7 +4,7 @@
 
 use std::{collections::BTreeMap, fmt::Debug};
 
-use anyhow::{Result, ensure};
+use anyhow::{ensure, Result};
 
 pub fn sls<T>(xs: BTreeMap<T, f64>, total: u64) -> Result<BTreeMap<T, u64>>
 where

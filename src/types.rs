@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-use anyhow::{Context, Result};
+use anyhow::{ensure, Context, Result};
 use std::collections::BTreeMap;
 
 use crate::parsing_types::{
@@ -143,6 +143,29 @@ impl Bund {
         Ok(Self { laender, parteien })
     }
 
+    pub fn check_sums(&self) -> Result<()> {
+        let mut expected: BTreeMap<GruppeNr, (u64, u64)> = Default::default();
+        for l in self.laender.iter() {
+            for (i, p) in l.parteien.iter() {
+                let x = expected.entry(*i).or_insert((0, 0));
+                x.0 += p.erststimmen.unwrap_or(0);
+                x.1 += p.zweitstimmen.unwrap_or(0);
+            }
+        }
+        for (i, v) in expected.iter() {
+            let p = self.parteien.get(i).with_context(|| {
+                format!("Partei {i} exists for at least one Land but not for Bund")
+            })?;
+            ensure!(v.0 == p.erststimmen.unwrap_or(0), "Erststimmen for Partei {i} did not match for Bund compared to summing up the ones of the Laender");
+            ensure!(v.1 == p.zweitstimmen.unwrap_or(0), "Zweitstimmen for Partei {i} did not match for Bund compared to summing up the ones of the Laender");
+        }
+
+        for l in self.laender.iter() {
+            l.check_sums()?;
+        }
+        Ok(())
+    }
+
     pub fn merge_parteien(&mut self, parteien: &[GruppeNr]) {
         if parteien.len() < 2 {
             return;
@@ -228,6 +251,29 @@ impl Land {
                 .einwohner,
             name,
         })
+    }
+
+    pub fn check_sums(&self) -> Result<()> {
+        let mut expected: BTreeMap<GruppeNr, (u64, u64)> = Default::default();
+        for l in self.wahlkreise.iter() {
+            for (i, p) in l.parteien.iter() {
+                let x = expected.entry(*i).or_insert((0, 0));
+                x.0 += p.erststimmen.unwrap_or(0);
+                x.1 += p.zweitstimmen.unwrap_or(0);
+            }
+        }
+        for (i, v) in expected.iter() {
+            let p = self.parteien.get(i).with_context(|| {
+                format!(
+                    "Partei {i} exists for at least one Wahlkreis but not for Land {}",
+                    self.name
+                )
+            })?;
+            ensure!(v.0 == p.erststimmen.unwrap_or(0), "Erststimmen for Partei {i} did not match for Land {} compared to summing up the ones of the Wahlkreise", self.name);
+            ensure!(v.1 == p.zweitstimmen.unwrap_or(0), "Zweitstimmen for Partei {i} did not match for Land {} compared to summing up the ones of the Wahlkreise", self.name);
+        }
+
+        Ok(())
     }
 
     pub fn merge_parteien(&mut self, parteien: &[GruppeNr]) {

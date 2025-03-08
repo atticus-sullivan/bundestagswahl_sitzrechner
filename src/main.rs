@@ -178,7 +178,9 @@ fn elections(
 
             let (mut bund, parteinr_name) = types::convert_data(stimmen, &struktur)?;
 
+            bund.check_sums()?;
             calc_op.exec(&mut bund, &parteinr_name);
+            bund.check_sums()?;
 
             debug!("{:#?}", parteinr_name);
             debug!(

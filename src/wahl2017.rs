@@ -158,10 +158,7 @@ fn oberverteilung(
         let unausgeglichener_ueberhang_cnt = unausgeglichener_ueberhang.values().sum::<u64>();
 
         if unausgeglichener_ueberhang_cnt == 0 {
-            return Ok((
-                dist,
-                total_seats,
-            ));
+            return Ok((dist, total_seats));
         }
     }
     bail!("Bundestag grew over u64::max");
