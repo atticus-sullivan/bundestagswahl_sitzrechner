@@ -9,6 +9,14 @@ use crate::types::{Bund, GruppeNr};
 
 use crate::wahl;
 
+/// Calculates the distribution of seats for `bund` according to a raw Mehrheitswahlrecht
+///
+/// In order to translate GruppeNr to Parteinamen (and reversed), it also needs `parteinr_name`
+///
+/// The idea is that this consumes the `bund` struct, modifies it (removes neglected Parteien) and
+/// returns the modified version in the end.
+///
+/// Returns the *seat distribution*, *total number of seats*, (filtered) *bund*
 pub fn calc(
     bund: Bund,
     _parteinr_name: &BTreeMap<GruppeNr, String>,

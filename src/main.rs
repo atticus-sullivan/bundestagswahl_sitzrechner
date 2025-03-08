@@ -41,6 +41,15 @@ const COLOR_ALT_BG: Color = Color::Rgb {
 };
 
 pub trait ElectionCalc {
+    /// Calculates the distribution of seats for `bund` according to the distribution scheme for
+    /// the election in the respective year
+    ///
+    /// In order to translate GruppeNr to Parteinamen (and reversed), it also needs `parteinr_name`
+    ///
+    /// The idea is that this consumes the `bund` struct, modifies it (removes neglected Parteien) and
+    /// returns the modified version in the end.
+    ///
+    /// Returns the *seat distribution*, *total number of seats*, (filtered) *bund*
     fn calc(
         &self,
         bund: Bund,
@@ -51,6 +60,15 @@ pub trait ElectionCalc {
 #[derive(Clone, Debug)]
 struct ElectionCalc2013 {}
 impl ElectionCalc for ElectionCalc2013 {
+    /// Calculates the distribution of seats for `bund` according to the distribution scheme for
+    /// the election in 2013
+    ///
+    /// In order to translate GruppeNr to Parteinamen (and reversed), it also needs `parteinr_name`
+    ///
+    /// The idea is that this consumes the `bund` struct, modifies it (removes neglected Parteien) and
+    /// returns the modified version in the end.
+    ///
+    /// Returns the *seat distribution*, *total number of seats*, (filtered) *bund*
     fn calc(
         &self,
         bund: Bund,
@@ -64,6 +82,15 @@ impl ElectionCalc for ElectionCalc2013 {
 #[derive(Clone, Debug)]
 struct ElectionCalc2017 {}
 impl ElectionCalc for ElectionCalc2017 {
+    /// Calculates the distribution of seats for `bund` according to the distribution scheme for
+    /// the election in 2017
+    ///
+    /// In order to translate GruppeNr to Parteinamen (and reversed), it also needs `parteinr_name`
+    ///
+    /// The idea is that this consumes the `bund` struct, modifies it (removes neglected Parteien) and
+    /// returns the modified version in the end.
+    ///
+    /// Returns the *seat distribution*, *total number of seats*, (filtered) *bund*
     fn calc(
         &self,
         bund: Bund,
@@ -75,6 +102,15 @@ impl ElectionCalc for ElectionCalc2017 {
 #[derive(Clone, Debug)]
 struct ElectionCalc2021 {}
 impl ElectionCalc for ElectionCalc2021 {
+    /// Calculates the distribution of seats for `bund` according to the distribution scheme for
+    /// the election in 2021
+    ///
+    /// In order to translate GruppeNr to Parteinamen (and reversed), it also needs `parteinr_name`
+    ///
+    /// The idea is that this consumes the `bund` struct, modifies it (removes neglected Parteien) and
+    /// returns the modified version in the end.
+    ///
+    /// Returns the *seat distribution*, *total number of seats*, (filtered) *bund*
     fn calc(
         &self,
         bund: Bund,
@@ -86,6 +122,15 @@ impl ElectionCalc for ElectionCalc2021 {
 #[derive(Clone, Debug)]
 struct ElectionCalc2025 {}
 impl ElectionCalc for ElectionCalc2025 {
+    /// Calculates the distribution of seats for `bund` according to the distribution scheme for
+    /// the election in 2025
+    ///
+    /// In order to translate GruppeNr to Parteinamen (and reversed), it also needs `parteinr_name`
+    ///
+    /// The idea is that this consumes the `bund` struct, modifies it (removes neglected Parteien) and
+    /// returns the modified version in the end.
+    ///
+    /// Returns the *seat distribution*, *total number of seats*, (filtered) *bund*
     fn calc(
         &self,
         bund: Bund,
@@ -97,6 +142,14 @@ impl ElectionCalc for ElectionCalc2025 {
 #[derive(Clone, Debug)]
 struct ElectionCalcMehrheit {}
 impl ElectionCalc for ElectionCalcMehrheit {
+    /// Calculates the distribution of seats for `bund` according to a raw Mehrheitswahlrecht
+    ///
+    /// In order to translate GruppeNr to Parteinamen (and reversed), it also needs `parteinr_name`
+    ///
+    /// The idea is that this consumes the `bund` struct, modifies it (removes neglected Parteien) and
+    /// returns the modified version in the end.
+    ///
+    /// Returns the *seat distribution*, *total number of seats*, (filtered) *bund*
     fn calc(
         &self,
         bund: Bund,

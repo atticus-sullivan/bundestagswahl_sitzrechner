@@ -18,7 +18,15 @@ use crate::wahl;
 // used (legal) references:
 // [1]: docs/2017_bundeswahlgesetz.pdf
 
-// TODO
+/// Calculates the distribution of seats for `bund` according to the distribution scheme for the election in
+/// 2017.
+///
+/// In order to translate GruppeNr to Parteinamen (and reversed), it also needs `parteinr_name`
+///
+/// The idea is that this consumes the `bund` struct, modifies it (removes neglected Parteien) and
+/// returns the modified version in the end.
+///
+/// Returns the *seat distribution*, *total number of seats*, (filtered) *bund*
 pub fn calc(
     bund: Bund,
     parteinr_name: &BTreeMap<GruppeNr, String>,
