@@ -9,6 +9,7 @@ mod sls;
 mod types;
 
 mod wahl;
+mod wahl2017;
 mod wahl2021;
 mod wahl2025;
 mod wahl_mehrheit;
@@ -47,6 +48,17 @@ pub trait ElectionCalc {
     ) -> Result<(BTreeMap<GruppeNr, (u64, u64)>, u64, Bund)>;
 }
 
+#[derive(Clone, Debug)]
+struct ElectionCalc2017 {}
+impl ElectionCalc for ElectionCalc2017 {
+    fn calc(
+        &self,
+        bund: Bund,
+        parteinr_name: &BTreeMap<GruppeNr, String>,
+    ) -> Result<(BTreeMap<GruppeNr, (u64, u64)>, u64, Bund)> {
+        wahl2017::calc(bund, parteinr_name)
+    }
+}
 #[derive(Clone, Debug)]
 struct ElectionCalc2021 {}
 impl ElectionCalc for ElectionCalc2021 {
@@ -289,6 +301,7 @@ struct Cli {
 
 #[derive(clap::ValueEnum, Clone, Debug)]
 enum Scheme {
+    Scheme2017,
     Scheme2021,
     Scheme2025,
     SchemeMehrheit,
@@ -296,6 +309,7 @@ enum Scheme {
 impl Scheme {
     fn to_election_calc(&self) -> Box<dyn ElectionCalc> {
         match self {
+            Scheme::Scheme2017 => Box::new(ElectionCalc2017 {}),
             Scheme::Scheme2021 => Box::new(ElectionCalc2021 {}),
             Scheme::Scheme2025 => Box::new(ElectionCalc2025 {}),
             Scheme::SchemeMehrheit => Box::new(ElectionCalcMehrheit {}),
@@ -303,6 +317,7 @@ impl Scheme {
     }
     fn title(&self) -> String {
         match self {
+            Scheme::Scheme2017 => "2017",
             Scheme::Scheme2021 => "2021",
             Scheme::Scheme2025 => "2025",
             Scheme::SchemeMehrheit => "Mehrheit",
@@ -311,6 +326,7 @@ impl Scheme {
     }
     fn wkm_name(&self) -> Option<String> {
         match self {
+            Scheme::Scheme2017 => Some("DM".to_owned()),
             Scheme::Scheme2021 => Some("DM".to_owned()),
             Scheme::Scheme2025 => Some("WKM".to_owned()),
             Scheme::SchemeMehrheit => None,

@@ -8,12 +8,18 @@ use std::collections::{BTreeMap, HashSet};
 
 use crate::types::{Bund, GruppeNr, Land, ParteiBund};
 
+// reuse some functions from other schemes
+use crate::wahl2021::sitzkontingent;
+use crate::wahl2021::unterverteilung;
+
 use crate::sls::sls;
 use crate::wahl;
 
 // used (legal) references:
-// [1]: docs/2021_bundeswahlgesetz.pdf
+// [1]: docs/2017_bundeswahlgesetz.pdf # TODO
 
+// TODO
+// references to the legal text are just copied from 2021 so they are probably wrong
 pub fn calc(
     bund: Bund,
     parteinr_name: &BTreeMap<GruppeNr, String>,
@@ -73,64 +79,11 @@ pub fn calc(
     Ok((ret, seats, bund))
 }
 
-/// Berechnet das *Sitzkontingent* für die verschiedenen `leander` auf Basis der `base_seats` Sitze
-///
-/// Wird auch *1.Oberverteilung* genannt
-///
-/// returns `land_idx -> kontingent`
-pub fn sitzkontingent(laender: &[Land], base_seats: u64) -> Result<BTreeMap<usize, u64>> {
-    // [1] -> § 6 Abs.2 Satz 1
-    // "[...] Gesamtzahl der Sitze [...] [wird] den Ländern nach deren Bevölkerungsanteil [...] zugeordnet"
-    let dist = sls(
-        laender
-            .iter()
-            .enumerate()
-            .map(|(i, j)| (i, j.einwohner))
-            .collect(),
-        base_seats,
-    )?;
-
-    Ok(dist)
-}
-
-/// Berechnet die *Unterverteilung* für die verschiedenen `laender` auf Basis des jeweiligen
-/// Sitzkontingents `sk`
-///
-/// returns `land_idx -> parteiNr -> Sitze`
-pub fn unterverteilung(
-    laender: &[Land],
-    sk: &BTreeMap<usize, u64>,
-) -> Result<BTreeMap<usize, BTreeMap<GruppeNr, u64>>> {
-    let mut uv = BTreeMap::new();
-
-    for (li, l) in laender.iter().enumerate() {
-        // [1] -> § 6 Abs.2 Satz 1
-        // "[...] in jedem Land [wird] die Zahl der dort[igen] [...] Sitze auf Grundlage der [...]
-        // Zweitstimmen den Landeslisten zugeordnet"
-        let dist: BTreeMap<i16, u64> = sls(
-            l.parteien
-                .iter()
-                .map(|(i, j)| -> Result<(GruppeNr, f64)> {
-                    Ok((
-                        *i,
-                        j.zweitstimmen.with_context(|| {
-                            format!("no zweitstimmen set for partei {i} in land {li}")
-                        })? as f64,
-                    ))
-                })
-                .collect::<Result<_>>()?,
-            sk[&li],
-        )?;
-        uv.insert(li, dist);
-    }
-    Ok(uv)
-}
-
 /// Berechnet die *Mindestsitzzahl* für jede Partei `parteien_bund` auf Basis der vorangegangen
 /// (Unter)verteilung `uv` und der `direktmandate` der Partei
 ///
 /// returns `parteiNr -> Sitze`
-pub fn mindestsitzzahl(
+fn mindestsitzzahl(
     laender: &[Land],
     parteien_bund: &BTreeMap<GruppeNr, ParteiBund>,
     uv: &BTreeMap<usize, BTreeMap<GruppeNr, u64>>,
@@ -140,7 +93,6 @@ pub fn mindestsitzzahl(
 
     for i in parteien_bund.keys() {
         let mut msz = 0;
-        let mut skv = 0;
         for (j, _) in laender.iter().enumerate() {
             // get -> unwrap_or makes sense as eg no entry for CSU in all laender except for Bayern
             // sitzkontingent der Partei im Land
@@ -149,19 +101,14 @@ pub fn mindestsitzzahl(
             let dm_p = *direktmandate[j].get(i).unwrap_or(&0);
 
             // [1] -> § 6 Abs.5 Satz 2
-            // "auf ganze Sitze aufgerundeten Mittelwert" => TODO ceil statt round?
-            let mean = ((skv_p + dm_p) as f64 / 2.0).round() as u64;
-            skv += skv_p;
-
-            // [1] -> § 6 Abs.5 Satz 2
             // "höhere Wert aus [...] der Zahl der Im Land [...] errungenen [Direktmandate] oder dem
             // [...] Mittelwert [(siehe oben)] [...]"
-            msz += mean.max(dm_p);
+            msz += skv_p.max(dm_p);
         }
         // [1] -> § 6 Abs.5 Satz 3
         // "Jede Partei erhält mindestens die bei der ersten Verteilung [...] für ihre Landesliste
         // ermittelten ermittelten Sitze"
-        msa.insert(*i, msz.max(skv));
+        msa.insert(*i, msz);
     }
     Ok(msa)
 }
@@ -170,7 +117,7 @@ pub fn mindestsitzzahl(
 /// Zweitstimmen und der jeweiligen Mindestsitzzahl `msz`
 ///
 /// returns `parteiNr -> Sitze`
-pub fn oberverteilung(
+fn oberverteilung(
     parteien_bund: &BTreeMap<GruppeNr, ParteiBund>,
     msz: &BTreeMap<GruppeNr, u64>,
 ) -> Result<(BTreeMap<GruppeNr, u64>, u64)> {
@@ -207,14 +154,12 @@ pub fn oberverteilung(
         // [1] -> § 6 Abs.5 Satz 4
         // "Bei der Erhöhung bleiben in den Wahlkreisen errungene Sitze [...] bis zu einer Zahl von
         // drei unberücksichtigt"
-        if unausgeglichener_ueberhang_cnt <= 3 {
+        if unausgeglichener_ueberhang_cnt == 0 {
             return Ok((
-                dist.iter()
-                    .map(|(i, s)| (*i, s + unausgeglichener_ueberhang[i]))
-                    .collect(),
+                dist,
                 // [1] -> § 6 Abs.5 Satz 5
                 // "die Gesamtzahl der Sitze [...] erhöht sich um die Unterschiedszahl"
-                total_seats + unausgeglichener_ueberhang_cnt,
+                total_seats,
             ));
         }
     }
