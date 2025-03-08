@@ -4,7 +4,7 @@
 
 Set Shell zsh
 Set FontSize 20
-Set Width 1600
+Set Width 1800
 Set Height 1000
 Output main.gif
 
