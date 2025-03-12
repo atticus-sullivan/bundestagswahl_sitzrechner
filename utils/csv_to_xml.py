@@ -37,6 +37,7 @@ def load_from_csv(fn):
         started = False
         contents = []
         for j,row in enumerate(csv_reader):
+            if len(row) == 0: continue
             if row[0] == "Nr" and not started:
                 hdr = row
                 # for h in hdr[19:]:
