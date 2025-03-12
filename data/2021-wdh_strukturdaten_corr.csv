@@ -1,0 +1,25 @@
+﻿# © Der Bundeswahlleiter, Wiesbaden 2021;;;
+# Extrahiert aus 2021_btw21_sitzberechnung.pdf (haben nicht übereingestimmt mit den eigentlich zur Verfügung gestellten Strukturdaten);;;
+#;;;
+# Strukturdaten für die Wahlkreise zum 20. Deutschen Bundestag (Bundestagswahl am 26.09.2021);;;
+#;;;
+# Zeichensatz: UTF-8 mit BOM. Trennzeichen: Semikolon.;;;
+#;;;
+Spalten-Nr.;;;4
+Land;Wahlkreis-Nr.;Wahlkreis-Name;Bevölkerung am 31.12.2019 - Deutsche (in 1000)
+Schleswig-Holstein;901;Land insgesamt;2659,792
+Mecklenburg-Vorpommern;913;Land insgesamt;1532,412
+Hamburg;902;Land insgesamt;1537,766
+Niedersachsen;903;Land insgesamt;7207,587
+Bremen;904;Land insgesamt;548,941
+Brandenburg;912;Land insgesamt;2397,701
+Sachsen-Anhalt;915;Land insgesamt;2056,177
+Berlin;911;Land insgesamt;2942,96
+Nordrhein-Westfalen;905;Land insgesamt;15415,642
+Sachsen;914;Land insgesamt;3826,905
+Hessen;906;Land insgesamt;5222,158
+Thüringen;916;Land insgesamt;1996,822
+Rheinland-Pfalz;907;Land insgesamt;3610,865
+Bayern;909;Land insgesamt;11328,866
+Baden-Württemberg;908;Land insgesamt;9313,413
+Saarland;910;Land insgesamt;865,191

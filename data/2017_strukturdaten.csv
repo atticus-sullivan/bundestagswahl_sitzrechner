@@ -1,0 +1,25 @@
+# © Die Bundeswahlleiterin, Wiesbaden 2017;;;
+# Extrahiert aus 2017_btw17_sitzberechnung.pdf
+#;;;
+# Strukturdaten für die Wahlkreise zum 19. Deutschen Bundestag;;;
+#;;;
+# Zeichensatz: UTF-8 mit BOM. Trennzeichen: Semikolon.;;;
+#;;;
+Spalten-Nr.;;;4
+Land;Wahlkreis-Nr.;Wahlkreis-Name;Bevölkerung am 30.06.2016 - Deutsche (in 1000)
+Schleswig-Holstein;901;Land insgesamt;2673,803
+Mecklenburg-Vorpommern;913;Land insgesamt;1548,4
+Hamburg;902;Land insgesamt;1525,09
+Niedersachsen;903;Land insgesamt;7278,789
+Bremen;904;Land insgesamt;568,51
+Brandenburg;912;Land insgesamt;2391,746
+Sachsen-Anhalt;915;Land insgesamt;2145,671
+Berlin;911;Land insgesamt;2975,745
+Nordrhein-Westfalen;905;Land insgesamt;15707,569
+Sachsen;914;Land insgesamt;3914,671
+Hessen;906;Land insgesamt;5281,198
+Thüringen;916;Land insgesamt;2077,901
+Rheinland-Pfalz;907;Land insgesamt;3661,245
+Bayern;909;Land insgesamt;11362,245
+Baden-Württemberg;908;Land insgesamt;9365,001
+Saarland;910;Land insgesamt;899,748
