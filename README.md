@@ -224,6 +224,8 @@ have an idea how to extend the tool? Great, same thing just drop me a message.
 > I keep references to the origin of the external files I include to ease the
 > whole setting things up part in a file with the same filename buf the
 > extension replaced with `.url` (the file is a simple text file though)
+>
+> EDIT: Now I mostly ONLY keep the url file to avoid licensing issues
 
 - [Wayback Machine for Bundeswahlgesetz on gesetze-im-internet.de](https://web.archive.org/web/20160423023415/http://www.gesetze-im-internet.de/bwahlg/index.html#BJNR003830956BJNE001607377)
 - [lookup of changes in the Bundeswahlgesetz](https://www.buzer.de/gesetz/33/l.htm)
