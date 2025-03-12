@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Lukas Heindl
+#
+# SPDX-License-Identifier: MIT
+
 import csv
 import xml.etree.ElementTree as ET
 import argparse
