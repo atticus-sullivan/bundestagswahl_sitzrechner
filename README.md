@@ -87,7 +87,7 @@ to one party and see how this changes the results.
 In this case there will be one table for each year per specified `op`.
 
 > [!NOTE]
-> If you have suggestions for useful perprocessing operations, feel free
+> If you have suggestions for useful preprocessing operations, feel free
 > to reach out to me via a github issue.
 
 ### Different SCHEMES
