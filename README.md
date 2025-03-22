@@ -47,13 +47,6 @@ not really intersting for my comparisions as well as I don't really know how to
 present all this data, this phase of the schemes is also not considered.
 
 ## Usage / Options / Features
-> [!NOTE]
-> Due to incertainties regarding the licensing of the doc and data files from
-> Bundeswahlleiter:in, this github repo is not shipping these files directly
-> anymore.
-> You may use `make downloadData` and/or `make downloadDocs` to download these
-> files directly from the source (or have a look at the `.url` file specifying
-> the source)
 ```bash
 Usage: sitzrechner [OPTIONS] [YEARS]...
 
